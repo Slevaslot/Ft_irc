@@ -40,6 +40,12 @@ private:
 	std::string _password;
 	std::vector<Client> clients; //-> vector of clients
 	std::vector<struct pollfd> fds; //-> vector of pollfd
+	struct clientData
+	{
+		std::string clientUser;
+		std::string clientPass;
+	} clientData;
+
 
 public:
 	Server(){SerSocketFd = -1;} //-> default constructor
@@ -57,4 +63,5 @@ public:
 	int	is_pass_correct(int incofd);
 	void CloseFds(); //-> close file descriptors
 	void ClearClients(int fd); //-> clear clients
+	int auth();
 };
