@@ -21,7 +21,7 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	std::string tmp = "localhost";
 	// int date = 2021;
 	// for(size_t i = 0; i < clients.size(); i++){
-	send_msg(clients[0].GetFd(), ":localhost 001 " + clients[0].GetNickname() + " :Welcome to the Internet Relay Chat, " + tmp + "\r\n");
+	// send_msg(clients[0].GetFd(), ":localhost 001 " + clients[0].GetNickname() + " :Welcome to the Internet Relay Chat, " + tmp + "\r\n");
 	//send_msg(clients[i].GetFd(), ":localhost 002 " + clients[i].GetNickname() + " :Your host is 42FT_IRC (localhost), running version i.0 \r\n");
 	// if (cmdSplited[0] == "PASS")
     // {
