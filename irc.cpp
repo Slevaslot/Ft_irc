@@ -1,12 +1,52 @@
-#include "irc.hpp"
-#include <cstring>
+#include "includes/server.hpp"
+
+// int Server::auth()
+// {
+//     if (client.clientPass != "\0")
+//         return (std::cout << "Password valid\n", 0);
+//     else
+//         return (std::cout << "Wrong Password\n", 1);
+// }
+
+// void Server::
+
+void send_msg(int fd, std::string msg) {
+    send(fd, msg.c_str(), msg.size(), 0);
+}
+
+void Server::parse_exec_cmd(std::string cmd, int fd)
+{
+	(void)fd;
+	std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
+	std::string tmp = "localhost";
+	// int date = 2021;
+	// for(size_t i = 0; i < clients.size(); i++){
+	send_msg(clients[0].GetFd(), ":localhost 001 " + clients[0].GetNickname() + " :Welcome to the Internet Relay Chat, " + tmp + "\r\n");
+	//send_msg(clients[i].GetFd(), ":localhost 002 " + clients[i].GetNickname() + " :Your host is 42FT_IRC (localhost), running version i.0 \r\n");
+	// if (cmdSplited[0] == "PASS")
+    // {
+	//send_msg(clients[i].GetFd(), ":localhost 003 " + clients[i].GetNickname() + " :This server was created at " + date + "\r\n");
+	//send_msg(clients[i].GetFd(), ":localhost 004 " + clients[i].GetNickname() + " 42FT_IRC 1.0 io kost k\r\n");
+	// }
+    std::cout << cmdSplited[0] << cmdSplited[1] << std::endl;
+	// std::cout << "ok" << std::endl;
+    //     if (cmdSplited[1] == _password)
+    //         clientData.clientPass = cmdSplited[1];
+    //     else
+    //         clientData.clientPass = "\0";
+    // }
+	// if (cmdSplited[0] == "USER")
+    // {
+    //     clientData.clientUser = cmdSplited[1];
+    // }
+}
 
 void Server::ClearClients(int fd){ //-> clear the clients
 	for(size_t i = 0; i < fds.size(); i++){ //-> remove the client from the pollfd
 		if (fds[i].fd == fd)
 			{fds.erase(fds.begin() + i); break;}
 	}
-	for(size_t i = 0; i < clients.size(); i++){ //-> remove the client from the deque of clients
+	for(size_t i = 0; i < clients.size(); i++){ //-> remove the client from the vector of clients
 		if (clients[i].GetFd() == fd)
 			{clients.erase(clients.begin() + i); break;}
 	}
@@ -42,25 +82,9 @@ void	Server::CloseFds(){
 	}
 }
 
-std::deque<std::string> Server::split_cmds_from_buffer(std::string str)
-{
-	std::deque<std::string> result;
-	std::istringstream ss(str);
-	std::string line;
-
-	while (std::getline(ss, line))
-	{
-		size_t pos = line.find_first_of("\r\n");
-		if(pos != std::string::npos)
-			line = line.substr(0, pos);
-		result.push_back(line);
-	}
-	return result;
-}
-
 void Server::ReceiveNewData(int fd)
 {
-	std::deque<std::string> cmd;
+	std::vector<std::string> cmd;
 	char buff[1024]; //-> buffer for the received data
 	memset(buff, 0, sizeof(buff)); //-> clear the buffer
 
@@ -73,15 +97,10 @@ void Server::ReceiveNewData(int fd)
 
 	else{
 		buff[bytes] = '\0';
-		cmd = split_cmds_from_buffer(buff);
+		cmd = splitLines(buff);
 		for(size_t i = 0; i < cmd.size(); i++)
 			parse_exec_cmd(cmd[i], fd);
 	}
-}
-
-int Server::is_pass_correct(int incofd) {
-
-	return (-1);
 }
 
 void Server::AcceptNewClient()
@@ -102,7 +121,7 @@ void Server::AcceptNewClient()
 
 	cli.SetFd(incofd); //-> set the client file descriptor
 	cli.setIpAdd(inet_ntoa((cliadd.sin_addr))); //-> convert the ip address to string and set it
-	clients.push_back(cli); //-> add the client to the deque of clients
+	clients.push_back(cli); //-> add the client to the vector of clients
 	fds.push_back(NewPoll); //-> add the client socket to the pollfd
 
 	std::cout << GRE << "Client :" << incofd << " Connected" << WHI << std::endl;
@@ -138,7 +157,6 @@ void Server::SerSocket()
 
 void Server::ServerInit()
 {
-	this->Port = this->Port;
 	SerSocket(); //-> create the server socket
 
 	std::cout << GRE << "Server <" << SerSocketFd << "> Connected" << WHI << std::endl;
