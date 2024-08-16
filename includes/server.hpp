@@ -9,6 +9,7 @@ private:
 	std::string _password;
 	std::vector<Client> clients; //-> vector of clients
 	std::vector<struct pollfd> fds; //-> vector of pollfd
+	Client currentClient;
 
 public:
 	Server(){SerSocketFd = -1;} //-> default constructor
@@ -27,5 +28,6 @@ public:
 	int auth();
 };
 
+void send_msg(int fd, std::string msg);
 std::vector<std::string> splitLines(std::string str);
 std::vector<std::string> tokenizeCommand(std::string cmd);

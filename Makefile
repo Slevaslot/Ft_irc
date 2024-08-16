@@ -1,4 +1,4 @@
-SRC = irc.cpp text_processing.cpp
+SRC = irc.cpp text_processing.cpp cmds/Ping.cpp
 CC = c++ -Wall -Wextra -Werror -std=c++98
 NAME = irc
 

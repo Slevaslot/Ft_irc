@@ -1,4 +1,4 @@
-#include "includes/server.hpp"
+#include "includes/cmds.hpp"
 
 // int Server::auth()
 // {
@@ -14,31 +14,44 @@ void send_msg(int fd, std::string msg) {
     send(fd, msg.c_str(), msg.size(), 0);
 }
 
+void sendWelcomeMessage(int fd, const std::string& nickname) {
+    std::string welcomeMsg = ":localhost 001 " + nickname + " :Welcome to the Internet Relay Chat, localhost\r\n";
+    send_msg(fd, welcomeMsg);
+}
+
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
-	(void)fd;
-	std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
-	std::string tmp = "localhost";
-	// int date = 2021;
-	// for(size_t i = 0; i < clients.size(); i++){
-	// send_msg(clients[0].GetFd(), ":localhost 001 " + clients[0].GetNickname() + " :Welcome to the Internet Relay Chat, " + tmp + "\r\n");
-	//send_msg(clients[i].GetFd(), ":localhost 002 " + clients[i].GetNickname() + " :Your host is 42FT_IRC (localhost), running version i.0 \r\n");
-	// if (cmdSplited[0] == "PASS")
-    // {
-	//send_msg(clients[i].GetFd(), ":localhost 003 " + clients[i].GetNickname() + " :This server was created at " + date + "\r\n");
-	//send_msg(clients[i].GetFd(), ":localhost 004 " + clients[i].GetNickname() + " 42FT_IRC 1.0 io kost k\r\n");
-	// }
-    std::cout << cmdSplited[0] << cmdSplited[1] << std::endl;
-	// std::cout << "ok" << std::endl;
-    //     if (cmdSplited[1] == _password)
-    //         clientData.clientPass = cmdSplited[1];
-    //     else
-    //         clientData.clientPass = "\0";
-    // }
-	// if (cmdSplited[0] == "USER")
-    // {
-    //     clientData.clientUser = cmdSplited[1];
-    // }
+    std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
+    if (cmdSplited.empty()) return;
+
+    std::string command = cmdSplited[0];
+	std::cout << "Command: " << command << std::endl;
+	std::cout << "Arg: " << cmdSplited[1] << std::endl;
+    if (command == "PASS" && cmdSplited.size() == 2) {
+
+        if (cmdSplited[1] == _password) {
+			currentClient.setPassword(cmdSplited[1]);
+            std::cout << "Password valid for client " << fd << std::endl;
+        } else {
+            std::cout << "Wrong password from client " << fd << std::endl;
+        }
+    }
+	else if (command == "USER" && cmdSplited.size() == 5) {
+        std::string username = cmdSplited[1];
+        std::cout << "USER command received with username: " << username << std::endl;
+    }
+	else if (command == "NICK" && cmdSplited.size() == 2) {
+		currentClient.setNickname(cmdSplited[1]);
+        std::string nickname = cmdSplited[1];
+        std::cout << "NICK command received with nickname: " << nickname << std::endl;
+		if (currentClient.GetPassword() == _password && currentClient.GetNickname() != "\0")
+			sendWelcomeMessage(fd,cmdSplited[1]);
+    }
+	if ((command == "PING" || command == "PRIVMSG"))
+		ping(cmdSplited, fd, currentClient.GetNickname());
+	else {
+        ;
+    }
 }
 
 void Server::ClearClients(int fd){ //-> clear the clients
@@ -122,6 +135,7 @@ void Server::AcceptNewClient()
 	cli.SetFd(incofd); //-> set the client file descriptor
 	cli.setIpAdd(inet_ntoa((cliadd.sin_addr))); //-> convert the ip address to string and set it
 	clients.push_back(cli); //-> add the client to the vector of clients
+	currentClient = cli;
 	fds.push_back(NewPoll); //-> add the client socket to the pollfd
 
 	std::cout << GRE << "Client :" << incofd << " Connected" << WHI << std::endl;
@@ -167,7 +181,7 @@ void Server::ServerInit()
 		if((poll(&fds[0],fds.size(),-1) == -1) && Server::Signal == false) //-> wait for an event
 			throw(std::runtime_error("poll() faild"));
 
-		for (size_t i = 0; i < fds.size(); i++){ //-> check all file descriptors
+		for (size_t i = 0; i < fds.size(); i++){
 			if (fds[i].revents & POLLIN){ //-> check if there is data to read
 				if (fds[i].fd == SerSocketFd)
 					AcceptNewClient(); //-> accept new client

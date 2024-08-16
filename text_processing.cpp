@@ -1,4 +1,4 @@
-#include "includes/server.hpp"
+#include "includes/cmds.hpp"
 
 std::vector<std::string> splitLines(std::string str)
 {

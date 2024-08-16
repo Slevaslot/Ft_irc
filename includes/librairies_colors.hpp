@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <cstring>
 #include <sstream>
+#include <stdlib.h>
 
 #define RED "\e[1;31m" //-> for red color
 #define WHI "\e[0;37m" //-> for white color
