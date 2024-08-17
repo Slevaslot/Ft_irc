@@ -1,7 +1,22 @@
 #include "../includes/cmds.hpp"
 
-void	ping(std::vector<std::string> cmdSplited, int fd, std::string nickName)
+Channel *Server::getChannel(std::string channelName)
 {
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		std::cout << channels[i].GetName() << channelName << std::endl;
+		if (channels[i].GetName() == channelName)
+			return &channels[i];
+	}
+	return NULL;
+}
+
+void	Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickName)
+{
+	if (getChannel(cmdSplited[1]))
+	{
+		getChannel(cmdSplited[1])->sendMsgAllClients(cmdSplited[2]);
+	}
 	if (cmdSplited.size() == 5)
 	{
 		std::string pong = "PONG " + nickName + " " + cmdSplited[1] + "\r\n";

@@ -15,8 +15,14 @@ void send_msg(int fd, std::string msg) {
 }
 
 void sendWelcomeMessage(int fd, const std::string& nickname) {
-    std::string welcomeMsg = ":localhost 001 " + nickname + " :Welcome to the Internet Relay Chat, localhost\r\n";
+    std::string welcomeMsg = ":localhost 001 " + nickname + " :Welcome to the Internet Relay Chat, " + nickname + "\r\n";
     send_msg(fd, welcomeMsg);
+}
+
+void	Server::auth(int fd)
+{
+	if (currentClient.GetPassword() == _password && currentClient.GetNickname() != "\0")
+		sendWelcomeMessage(fd, currentClient.GetNickname());
 }
 
 void Server::parse_exec_cmd(std::string cmd, int fd)
@@ -25,33 +31,26 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
     if (cmdSplited.empty()) return;
 
     std::string command = cmdSplited[0];
-	std::cout << "Command: " << command << std::endl;
-	std::cout << "Arg: " << cmdSplited[1] << std::endl;
-    if (command == "PASS" && cmdSplited.size() == 2) {
-
-        if (cmdSplited[1] == _password) {
-			currentClient.setPassword(cmdSplited[1]);
-            std::cout << "Password valid for client " << fd << std::endl;
-        } else {
-            std::cout << "Wrong password from client " << fd << std::endl;
-        }
-    }
-	else if (command == "USER" && cmdSplited.size() == 5) {
+	std::cout << YEL << "Command: " << command << "| Arg: " << cmdSplited[1] << WHI << std::endl;
+    if (command == "PASS" && cmdSplited.size() == 2)
+        pass(cmdSplited[1], _password, currentClient);
+	else if ((command == "USER" || command == "userhost") && cmdSplited.size() >= 2) {
         std::string username = cmdSplited[1];
+		currentClient.setUsername(cmdSplited[1]);
         std::cout << "USER command received with username: " << username << std::endl;
     }
-	else if (command == "NICK" && cmdSplited.size() == 2) {
+	else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2) {
 		currentClient.setNickname(cmdSplited[1]);
         std::string nickname = cmdSplited[1];
         std::cout << "NICK command received with nickname: " << nickname << std::endl;
-		if (currentClient.GetPassword() == _password && currentClient.GetNickname() != "\0")
-			sendWelcomeMessage(fd,cmdSplited[1]);
+		auth(fd);
     }
-	if ((command == "PING" || command == "PRIVMSG"))
+	else if ((command == "PING" || command == "PRIVMSG"))
 		ping(cmdSplited, fd, currentClient.GetNickname());
-	else {
-        ;
-    }
+	else if (command == "JOIN")
+		join(cmdSplited, fd, currentClient);
+		else if (command == "KICK" && cmdSplited.size() >= 3)
+			Kick(fd, cmdSplited[1], cmdSplited[2]);
 }
 
 void Server::ClearClients(int fd){ //-> clear the clients
