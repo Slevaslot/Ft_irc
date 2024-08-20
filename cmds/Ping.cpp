@@ -15,7 +15,7 @@ void	Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickN
 {
 	if (getChannel(cmdSplited[1]))
 	{
-		getChannel(cmdSplited[1])->sendMsgAllClients(cmdSplited[2]);
+		getChannel(cmdSplited[1])->sendMsgAllClientsEx(cmdSplited[2], fd);
 	}
 	if (cmdSplited.size() == 5)
 	{

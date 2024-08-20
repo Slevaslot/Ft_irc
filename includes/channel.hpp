@@ -29,11 +29,30 @@ class Channel
 		std::vector<Client> GetClients(){return _clients;};
 		void AddClient(Client client){ _clients.push_back(client); };
 		std::string &GetName() { return _name; };
-		void sendMsgAllClients(std::string msg) {
+		void sendMsgTo(std::string msg, int fd) {
 			for(size_t i = 0; i < _clients.size() ; i++)
 			{
-				std::string privMsg = ":" + _clients[i].GetNickname() + "!" + _clients[i].GetUsername() + "@localhost PRIVMSG " + _name + " :" + msg + "\r\n";
-				send(_clients[i].GetFd(), privMsg.c_str(), privMsg.size(), 0);
+				if (_clients[i].GetFd() == fd)
+				{
+					std::string privMsg = ":" + _clients[i].GetNickname() + "!" + _clients[i].GetUsername() + "@localhost PRIVMSG " + _name + " :" + msg + "\r\n";
+					send(_clients[i].GetFd(), privMsg.c_str(), privMsg.size(), 0);
+				}
+			}
+		}
+		void sendMsgAllClientsEx(std::string msg, int fd) {
+			Client currentClient;
+			for(size_t i = 0; i < _clients.size() ; i++)
+			{
+				if (_clients[i].GetFd() == fd)
+					currentClient = _clients[i];
+			}
+			for(size_t i = 0; i < _clients.size() ; i++)
+			{
+				if (_clients[i].GetFd() != fd)
+				{
+					std::string privMsg = ":" + currentClient.GetNickname() + "!" + currentClient.GetUsername() + "@localhost PRIVMSG " + _name + " :" + msg + "\r\n";
+					send(_clients[i].GetFd(), privMsg.c_str(), privMsg.size(), 0);
+				}
 			}
 		}
 };

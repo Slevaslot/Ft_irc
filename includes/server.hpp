@@ -30,6 +30,7 @@ public:
 	void CloseFds(); //-> close file descriptors
 	void ClearClients(int fd); //-> clear clients
 	void	auth(int fd);
+	void	listChannels(int fd);
 	void	Kick(int fd, std::string channelName, std::string clientName);
 	void	ping(std::vector<std::string> cmdSplited, int fd, std::string nickName);
 	void	join(std::vector<std::string> cmdSplited, int fd, Client &currentClient);

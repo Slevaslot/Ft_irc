@@ -49,8 +49,10 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		ping(cmdSplited, fd, currentClient.GetNickname());
 	else if (command == "JOIN")
 		join(cmdSplited, fd, currentClient);
-		else if (command == "KICK" && cmdSplited.size() >= 3)
-			Kick(fd, cmdSplited[1], cmdSplited[2]);
+	else if (command == "KICK" && cmdSplited.size() >= 3)
+		Kick(fd, cmdSplited[1], cmdSplited[2]);
+	else if (command == "LIST")
+		listChannels(fd);
 }
 
 void Server::ClearClients(int fd){ //-> clear the clients
