@@ -31,7 +31,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
     if (cmdSplited.empty()) return;
 
     std::string command = cmdSplited[0];
-	std::cout << YEL << "Command: " << command << "| Arg: " << cmdSplited[1] << WHI << std::endl;
+	if (cmdSplited.size() > 1)
+		std::cout << YEL << "Command: " << command << cmdSplited[1] /*<< cmdSplited[2] << cmdSplited[3] */ << "| Arg: " << cmdSplited[1] << WHI << std::endl;
     if (command == "PASS" && cmdSplited.size() == 2)
         pass(cmdSplited[1], _password, currentClient);
 	else if ((command == "USER" || command == "userhost") && cmdSplited.size() >= 2) {
@@ -49,8 +50,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		ping(cmdSplited, fd, currentClient.GetNickname());
 	else if (command == "JOIN")
 		join(cmdSplited, fd, currentClient);
-	else if (command == "KICK" && cmdSplited.size() >= 3)
-		Kick(fd, cmdSplited[1], cmdSplited[2]);
+	// else if (command == "KICK" && cmdSplited.size() >= 3)
+	// 	Kick(fd, cmdSplited[1], cmdSplited[2]);
 	else if (command == "LIST")
 		listChannels(fd);
 }
