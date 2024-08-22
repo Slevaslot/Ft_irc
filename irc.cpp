@@ -21,8 +21,8 @@ void sendWelcomeMessage(int fd, const std::string& nickname) {
 
 void	Server::auth(int fd)
 {
-	if (currentClient.GetPassword() == _password && currentClient.GetNickname() != "\0")
-		sendWelcomeMessage(fd, currentClient.GetNickname());
+	if (clients[_curr].GetPassword() == _password && clients[_curr].GetNickname() != "\0")
+		sendWelcomeMessage(fd, clients[_curr].GetNickname());
 }
 
 void Server::parse_exec_cmd(std::string cmd, int fd)
@@ -32,24 +32,24 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 
     std::string command = cmdSplited[0];
 	if (cmdSplited.size() > 1)
-		std::cout << YEL << "Command: " << command << cmdSplited[1] /*<< cmdSplited[2] << cmdSplited[3] */ << "| Arg: " << cmdSplited[1] << WHI << std::endl;
+		std::cout << YEL << "Command: " << command  << "| Arg: " << cmdSplited[1] << WHI << std::endl;
     if (command == "PASS" && cmdSplited.size() == 2)
-        pass(cmdSplited[1], _password, currentClient);
+        pass(cmdSplited[1], _password, clients[_curr]);
 	else if ((command == "USER" || command == "userhost") && cmdSplited.size() >= 2) {
         std::string username = cmdSplited[1];
-		currentClient.setUsername(cmdSplited[1]);
+		clients[_curr].setUsername(cmdSplited[1]);
         std::cout << "USER command received with username: " << username << std::endl;
     }
 	else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2) {
-		currentClient.setNickname(cmdSplited[1]);
+		clients[_curr].setNickname(cmdSplited[1]);
         std::string nickname = cmdSplited[1];
         std::cout << "NICK command received with nickname: " << nickname << std::endl;
 		auth(fd);
     }
-	else if ((command == "PING" || command == "PRIVMSG"))
-		ping(cmdSplited, fd, currentClient.GetNickname());
+	else if ((command == "PRIVMSG"))
+		ping(cmdSplited, fd, clients[_curr].GetNickname());
 	else if (command == "JOIN")
-		join(cmdSplited, fd, currentClient);
+		join(cmdSplited, fd, clients[_curr]);
 	// else if (command == "KICK" && cmdSplited.size() >= 3)
 	// 	Kick(fd, cmdSplited[1], cmdSplited[2]);
 	else if (command == "LIST")
@@ -137,7 +137,8 @@ void Server::AcceptNewClient()
 	cli.SetFd(incofd); //-> set the client file descriptor
 	cli.setIpAdd(inet_ntoa((cliadd.sin_addr))); //-> convert the ip address to string and set it
 	clients.push_back(cli); //-> add the client to the vector of clients
-	currentClient = cli;
+	currentClient = clients.back();
+	_curr++;
 	fds.push_back(NewPoll); //-> add the client socket to the pollfd
 
 	std::cout << GRE << "Client :" << incofd << " Connected" << WHI << std::endl;
@@ -205,6 +206,7 @@ int main(int ac, char **av)
 			signal(SIGINT, Server::SignalHandler); //-> catch the signal (ctrl + c)
 			signal(SIGQUIT, Server::SignalHandler); //-> catch the signal (ctrl + \)
 			ser.setPort(atoi(av[1]));
+			ser.setCurr(-1);
 			ser.setPassword(av[2]);
 			ser.ServerInit(); //-> initialize the server
 		}

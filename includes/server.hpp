@@ -14,6 +14,7 @@ private:
 	std::vector<struct pollfd> fds; //-> vector of pollfd
 	Client currentClient;
 	std::vector<Channel> channels;
+	size_t _curr;
 
 public:
 	Server(){SerSocketFd = -1;} //-> default constructor
@@ -21,6 +22,7 @@ public:
 	void ServerInit(); //-> server initialization
 	void SerSocket(); //-> server socket creation
 	void	setPort(int newport);
+	void	setCurr(size_t c){_curr = c;};
 	void	setPassword(std::string password);
 	void AcceptNewClient(); //-> accept new client
 	void ReceiveNewData(int fd); //-> receive new data from a registered client
@@ -31,6 +33,7 @@ public:
 	void ClearClients(int fd); //-> clear clients
 	void	auth(int fd);
 	void	listChannels(int fd);
+	void	privMsg(std::vector<std::string> cmdSplited, std::string nickName);
 	void	Kick(int fd, std::string channelName, std::string clientName);
 	void	ping(std::vector<std::string> cmdSplited, int fd, std::string nickName);
 	void	join(std::vector<std::string> cmdSplited, int fd, Client &currentClient);
