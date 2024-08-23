@@ -23,6 +23,7 @@ void	Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentCl
 		{
 			Channel newChannel(cmdSplited[1]);
 			newChannel.AddClient(currentClient);
+			newChannel.AddOperator(currentClient);
 			channels.push_back(newChannel);
 		}
 		std::string joinMsg = ":" + currentClient.GetNickname() + "!" + currentClient.GetUsername() + "@localhost JOIN " + cmdSplited[1] + "\r\n";
@@ -47,4 +48,3 @@ void	Server::Kick(int fd, std::string channelName, std::string clientName)
 		// send(fd, quitCommand.c_str(), quitCommand.size(), 0);
 	}
 }
-

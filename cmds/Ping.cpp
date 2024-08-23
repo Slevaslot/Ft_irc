@@ -4,10 +4,10 @@ Channel *Server::getChannel(std::string channelName)
 {
 	for (size_t i = 0; i < channels.size(); i++)
 	{
-		std::cout << channels[i].GetName() << channelName << std::endl;
 		if (channels[i].GetName() == channelName)
 			return &channels[i];
 	}
+	std::cout << "GET CHANNEL PASS\n";
 	return NULL;
 }
 

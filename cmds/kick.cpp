@@ -1,0 +1,39 @@
+#include "../includes/cmds.hpp"
+
+template <typename T>
+std::string toString(const T& value)
+{
+	std::ostringstream oss;
+	oss << value;
+	return oss.str();
+}
+
+bool Server::isOperator(int fd, Channel *channel)
+{
+	std::vector<Client> operators = channel->GetOperators();
+	for(std::vector<Client>::iterator i = operators.begin(); i < operators.end(); i++)
+	{
+		if (i->GetFd() == fd)
+			return (true);
+	}
+	std::cout << "GET OP PASS\n";
+	return (false);
+}
+
+void Server::kickChannel(int fd, std::string channelName, std::string nickName)
+{
+	Channel* channel = getChannel("#" + channelName);
+	if (channel == NULL || !isOperator(fd, channel))
+		return;
+	std::vector<Client> clients = channel->GetClients();
+	for(std::vector<Client>::iterator i = clients.begin(); i < clients.end() ; i++)
+	{
+		if (":" + i->GetNickname() == nickName)
+		{
+			std::cout << RED << "Kick " << nickName << WHI << std::endl;
+			send_msg(fd, "Kicked " + i->GetNickname() + "slevaslo" + "\r\n");
+			clients.erase(i);
+			break;
+		}
+	}
+}

@@ -9,3 +9,5 @@ Client Channel::GetClient(std::string clientName)
 	}
 	return (_clients[_clients.size()]);
 }
+
+

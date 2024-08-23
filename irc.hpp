@@ -56,7 +56,6 @@ public:
 	void	setPassword(std::string password);
 	void AcceptNewClient(); //-> accept new client
 	void ReceiveNewData(int fd); //-> receive new data from a registered client
-
 	static void SignalHandler(int signum); //-> signal handler
 	void parse_exec_cmd(std::string cmd, int fd);
 	std::deque<std::string> split_cmds_from_buffer(std::string str);

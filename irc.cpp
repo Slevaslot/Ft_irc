@@ -25,35 +25,43 @@ void	Server::auth(int fd)
 		sendWelcomeMessage(fd, clients[_curr].GetNickname());
 }
 
+void print_command(std::vector<std::string> cmds)
+{
+	std::cout << YEL << "Command : " << cmds[0] << " {";
+	for (size_t i = 1; i < cmds.size(); i++)
+		std::cout << "Arg[" << i << "]: " << cmds[i] << " | ";
+	std::cout << "Size: " << cmds.size() << '}' << WHI << std::endl;
+}
+
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
     std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
+	int currentClient = GetClientByFd(fd);
     if (cmdSplited.empty()) return;
 
     std::string command = cmdSplited[0];
-	if (cmdSplited.size() > 1)
-		std::cout << YEL << "Command: " << command  << "| Arg: " << cmdSplited[1] << WHI << std::endl;
+	print_command(cmdSplited);
     if (command == "PASS" && cmdSplited.size() == 2)
-        pass(cmdSplited[1], _password, clients[_curr]);
+        pass(cmdSplited[1], _password, clients[currentClient]);
 	else if ((command == "USER" || command == "userhost") && cmdSplited.size() >= 2) {
         std::string username = cmdSplited[1];
-		clients[_curr].setUsername(cmdSplited[1]);
-        std::cout << "USER command received with username: " << username << std::endl;
+		clients[currentClient].setUsername(cmdSplited[1]);
     }
 	else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2) {
-		clients[_curr].setNickname(cmdSplited[1]);
+		clients[currentClient].setNickname(cmdSplited[1]);
         std::string nickname = cmdSplited[1];
-        std::cout << "NICK command received with nickname: " << nickname << std::endl;
-		auth(fd);
+		auth(clients[currentClient].GetFd());
     }
 	else if ((command == "PRIVMSG"))
-		ping(cmdSplited, fd, clients[_curr].GetNickname());
+		ping(cmdSplited, fd, clients[currentClient].GetNickname());
 	else if (command == "JOIN")
-		join(cmdSplited, fd, clients[_curr]);
-	// else if (command == "KICK" && cmdSplited.size() >= 3)
-	// 	Kick(fd, cmdSplited[1], cmdSplited[2]);
+		join(cmdSplited, fd, clients[currentClient]);
 	else if (command == "LIST")
 		listChannels(fd);
+	else if (command == "KICK" )
+		kickChannel(fd, cmdSplited[2], cmdSplited[3]);
+	else if (command == "TOPIC")
+		topicChannel(fd, cmdSplited[2], cmdSplited[3]);
 }
 
 void Server::ClearClients(int fd){ //-> clear the clients

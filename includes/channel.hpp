@@ -10,9 +10,12 @@ class Channel
 {
 	private :
 		std::string _name;
+		std::string _topic;
 		std::vector<Client> _clients;
+		std::vector<Client> _operators;
 	public :
-		Channel(std::string name) { _name = name; };
+		Channel(std::string name) { _name = name; _topic = "undefined";};
+		void setTopic(std::string topic) { _topic = topic; };
 		Client GetClient(std::string clientName);
 		std::vector<Client>::iterator GetThisClient(Client cli)
 		{
@@ -27,8 +30,11 @@ class Channel
 			return (it);
 		}
 		std::vector<Client> GetClients(){return _clients;};
+		std::vector<Client> GetOperators(){return _operators;};
 		void AddClient(Client client){ _clients.push_back(client); };
+		void AddOperator(Client client){ _operators.push_back(client); };
 		std::string &GetName() { return _name; };
+		std::string &GetTopic() { return _topic; };
 		void sendMsgTo(std::string msg, int fd) {
 			for(size_t i = 0; i < _clients.size() ; i++)
 			{

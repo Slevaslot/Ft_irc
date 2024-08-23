@@ -31,12 +31,27 @@ public:
 	void parse_exec_cmd(std::string cmd, int fd);
 	void CloseFds(); //-> close file descriptors
 	void ClearClients(int fd); //-> clear clients
+	int GetClientByFd(int fd)
+	{
+		int i = -1;
+		std::vector<Client>::iterator it;
+		for(it = clients.begin(); it < clients.end(); it++)
+		{
+			++i;
+			if(it->GetFd() == fd)
+				return (i);
+		}
+		return _curr;
+	};
 	void	auth(int fd);
 	void	listChannels(int fd);
 	void	privMsg(std::vector<std::string> cmdSplited, std::string nickName);
 	void	Kick(int fd, std::string channelName, std::string clientName);
 	void	ping(std::vector<std::string> cmdSplited, int fd, std::string nickName);
 	void	join(std::vector<std::string> cmdSplited, int fd, Client &currentClient);
+	void	kickChannel(int fd, std::string channelName, std::string nickName);
+	bool	isOperator(int fd, Channel *channel);
+	void	topicChannel(int fd, std::string channelName, std::string topic);
 };
 
 void send_msg(int fd, std::string msg);
