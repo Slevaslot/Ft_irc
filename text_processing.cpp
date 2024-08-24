@@ -19,10 +19,10 @@ std::vector<std::string> splitLines(std::string str)
 std::vector<std::string> tokenizeCommand(std::string cmd)
 {
 	std::vector<std::string> result;
-    std::stringstream ss(cmd);
-    std::string token;
+	std::stringstream ss(cmd);
+	std::string token;
 
-    while (ss >> token)
-        result.push_back(token);
-    return result;
+	while (ss >> token)
+		result.push_back(token);
+	return result;
 }
