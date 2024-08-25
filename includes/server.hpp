@@ -43,6 +43,7 @@ public:
 		}
 		return -1;
 	};
+	std::vector<Client> GetClients(){return clients;};
 	void	auth(int fd);
 	void	listChannels(int fd);
 	void	privMsg(std::vector<std::string> cmdSplited, std::string nickName);
@@ -54,11 +55,15 @@ public:
 	bool	isOperator(int fd, Channel *channel);
 	void	topicChannel(int fd, std::string channelName, std::string topic);
 	void	modeChannel(int fd, std::string channelName, std::string *args);
-	void 	privateChannel(Channel channel);
-	// void	inviteChannel();
+	void 	privateChannel(Channel &channel);
+	void	inviteChannel(int fd, std::string nickName, std::string channelName);
+	bool	isClient(std::string nickname);
+	bool	isInvite(Client client, Channel channel);
+	Client	*GetClientByNickname(std::string nickname);
 };
 
 void send_msg(int fd, std::string msg);
+void redc(std::string msg);
 std::vector<std::string> splitLines(std::string str);
 std::vector<std::string> tokenizeCommand(std::string cmd);
 

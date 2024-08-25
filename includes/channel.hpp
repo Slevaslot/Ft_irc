@@ -13,6 +13,7 @@ class Channel
 		std::string _topic;
 		std::vector<Client> _clients;
 		std::vector<Client> _operators;
+		std::vector<Client> _guests;
 		bool _private;
 	public :
 		Channel(std::string name) { _name = name; _topic = "undefined"; _private = false;};
@@ -33,9 +34,11 @@ class Channel
 		}
 		std::vector<Client> GetClients(){return _clients;};
 		std::vector<Client> GetOperators(){return _operators;};
+		std::vector<Client> GetGuests(){return _guests;};
 		bool GetPrivate(){return _private;};
 		void AddClient(Client client){ _clients.push_back(client); };
 		void AddOperator(Client client){ _operators.push_back(client); };
+		void AddGuests(Client client){ _guests.push_back(client); };
 		std::string &GetName() { return _name; };
 		std::string &GetTopic() { return _topic; };
 		void sendMsgTo(std::string msg, int fd) {

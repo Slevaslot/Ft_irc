@@ -7,7 +7,8 @@ Channel *Server::getChannel(std::string channelName)
 		if (channels[i].GetName() == channelName)
 			return &channels[i];
 	}
-	std::cout << "GET CHANNEL PASS " << channelName << std::endl;
+	std::cout << RED << "No channel named : " << channelName << WHI << std::endl;
+	// std::cout << "GET CHANNEL PASS " << channelName << std::endl;
 	return NULL;
 }
 

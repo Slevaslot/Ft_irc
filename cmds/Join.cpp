@@ -22,9 +22,18 @@ void	Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentCl
 		if (tryJoinChannel(cmdSplited[1], channels, currentClient) == false)
 		{
 			Channel newChannel(cmdSplited[1]);
+			newChannel.setPrivate(false);
 			newChannel.AddClient(currentClient);
 			newChannel.AddOperator(currentClient);
 			channels.push_back(newChannel);
+		}
+		if (getChannel(cmdSplited[1])->GetPrivate())
+		{
+			if (!isInvite(currentClient, *getChannel(cmdSplited[1])))
+			{
+				std::string message = "PART " + cmdSplited[1] + " :You are not invite!\r\n";
+				send_msg(fd, message);
+			}
 		}
 		std::string joinMsg = ":" + currentClient.GetNickname() + "!" + currentClient.GetUsername() + "@localhost JOIN " + cmdSplited[1] + "\r\n";
 		send_msg(fd, joinMsg);

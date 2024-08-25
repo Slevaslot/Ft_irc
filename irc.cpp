@@ -69,7 +69,7 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	else if (command == "MODE")
 		modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
 	else if (command == "INVITE")
-		;
+		inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
 }
 
 void Server::ClearClients(int fd){ //-> clear the clients
