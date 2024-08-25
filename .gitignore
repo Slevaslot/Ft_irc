@@ -1,0 +1,11 @@
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+build/
+ircserv
+**/ircserv
