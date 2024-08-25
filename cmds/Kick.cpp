@@ -53,7 +53,6 @@ void Server::part(int fd, std::string channelName, std::string nickname)
 			std::cout << RED << "PART" << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
 			send_msg(fd, message);
-			clients.erase(it);
 		}
 	}
 }

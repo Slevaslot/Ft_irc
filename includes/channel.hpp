@@ -36,6 +36,7 @@ class Channel
 		std::vector<Client> GetOperators(){return _operators;};
 		std::vector<Client> GetGuests(){return _guests;};
 		bool GetPrivate(){return _private;};
+		void EraseClientByIt(std::vector<Client>::iterator it) {_clients.erase(it);};
 		void AddClient(Client client){ _clients.push_back(client); };
 		void AddOperator(Client client){ _operators.push_back(client); };
 		void AddGuests(Client client){ _guests.push_back(client); };
