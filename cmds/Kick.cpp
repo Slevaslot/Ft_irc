@@ -33,7 +33,7 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickName)
 			std::cout << RED << "Kick " << nickName << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
 			send_msg(i->GetFd(), message);
-			clients.erase(i);
+			getChannel(channelName)->EraseClientByIt(i);
 			break;
 		}
 	}
@@ -53,6 +53,7 @@ void Server::part(int fd, std::string channelName, std::string nickname)
 			std::cout << RED << "PART" << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
 			send_msg(fd, message);
+			getChannel(channelName)->EraseClientByIt(it);
 		}
 	}
 }

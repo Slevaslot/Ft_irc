@@ -16,7 +16,6 @@ bool tryJoinChannel(std::string channelName, std::vector<Channel> &channels, Cli
 
 void	Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentClient)
 {
-	currentClient.SetFd(fd);
 	if (cmdSplited.size() >= 2)
 	{
 		if (tryJoinChannel(cmdSplited[1], channels, currentClient) == false)
@@ -31,10 +30,13 @@ void	Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentCl
 		{
 			if (!isInvite(currentClient, *getChannel(cmdSplited[1])))
 			{
-				std::string message = "PART " + cmdSplited[1] + " :You are not invite!\r\n";
+				std::string message = "PART " + cmdSplited[1] + " :Bye!\r\n";
 				send_msg(fd, message);
+				redc("degage");
+				return ;
 			}
 		}
+		currentClient.SetFd(fd);
 		std::string joinMsg = ":" + currentClient.GetNickname() + "!" + currentClient.GetUsername() + "@localhost JOIN " + cmdSplited[1] + "\r\n";
 		send_msg(fd, joinMsg);
 	}
