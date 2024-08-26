@@ -10,8 +10,10 @@ std::string toString(const T& value)
 
 void Server::topicChannel(int fd, std::string channelName, std::string topic)
 {
-	Channel* channel = getChannel("#" + channelName);
-	if (channel == NULL || !isOperator(fd, channel))
+	channelName[0] = '#';
+	Channel* channel = getChannel(channelName);
+	std::cout <<  channel->getState('t') << std::endl;
+	if (channel == NULL || !isOperator(fd, channel) || channel->getState('t') == ON)
 		return;
 	channel->setTopic(topic);
 }

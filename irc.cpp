@@ -4,39 +4,66 @@ void send_msg(int fd, std::string msg) {
     send(fd, msg.c_str(), msg.size(), 0);
 }
 
-void sendWelcomeMessage(int fd, const std::string& nickname) {
-    std::string welcomeMsg = ":localhost 001 " + nickname + " :Welcome to the Internet Relay Chat, " + nickname + "\r\n";
+void Server::sendWelcomeMessage(int fd, const std::string& nickname) {
+	std::string welcomeMsg = ":" + hostname + " 001 " +  nickname +  " :Welcome to the Internet Relay Network " + nickname + "!~" + nickname + "@" + hostname +"\r\n";
     send_msg(fd, welcomeMsg);
 }
 
-bool	Server::isNicknameValid(const std::string& nickname, int currentClient) {
-	std::ostringstream oss;
-	bool ret;
-    oss << _nodc;
-	ret = true;
-	if (nickname.empty())
+template <typename T>
+std::string toString(const T& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
+// bool Server::defaultNickname(Client& client)
+// {
+// 	std::vector<Client>::iterator it = clients.begin();
+// 	int i = 0;
+
+// 	while (it != clients.end())
+// 	{
+// 		if (it->GetNickname() == client.GetNickname() || client.GetNickname().empty())
+// 		{
+// 			client.setNickname("user" + toString(i));
+// 			i++;
+// 			it = clients.begin();
+// 		}
+// 		else
+// 			it++;
+// 	}
+// 	if (i == 0)
+// 		return true;
+// 	return false;
+// }
+
+void	Server::isNicknameValid(Client &client)
+{
+	int i = 0 , j = 0;
+
+	for(std::vector<Client>::iterator it = clients.begin(); it != clients.end(); NULL)
 	{
-		clients[currentClient].setNickname("user" + oss.str());
-		_nodc++;
-		ret = false;
-	}
-	else
-	{
-		for(size_t i = -1; ++i < clients.size();)
+		if (it->GetNickname() == client.GetNickname() || client.GetNickname().empty())
 		{
-			if (clients[i].GetNickname() == nickname)
-			{
-				clients[currentClient].setNickname("user" + oss.str());
-				_nodc++;
-				ret = false;
-			}
+			it++;
+			j++;
+		}
+		else
+			it++;
+		if (j > 1)
+		{
+			client.setNickname("user" + toString(i));
+			i++;
+			j = 0;
+			it = clients.begin();
 		}
 	}
-	return ret;
 }
 
 void	Server::auth(int fd, int currentClient)
 {
+	std::cout << clients[currentClient].GetNickname() << " is trying to connect" << std::endl;
 	if (clients[currentClient].GetPassword() == _password && clients[currentClient].GetNickname() != "\0")
 		sendWelcomeMessage(fd, clients[currentClient].GetNickname());
 }
@@ -65,9 +92,10 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
         std::string username = cmdSplited[1];
 		clients[currentClient].setUsername(cmdSplited[1]);
     }
-	else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2) {
-		if (isNicknameValid(cmdSplited[1], currentClient) == true)
-			clients[currentClient].setNickname(cmdSplited[1]);
+	else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2)
+	{
+		clients[currentClient].setNickname(cmdSplited[1]);
+		isNicknameValid(clients[currentClient]);
 		auth(clients[currentClient].GetFd(), currentClient);
     }
 	else if ((command == "PRIVMSG"))
@@ -228,6 +256,8 @@ void Server::ServerInit()
 	CloseFds();
 }
 
+
+
 int main(int ac, char **av)
 {
 	if (ac == 3)
@@ -239,6 +269,7 @@ int main(int ac, char **av)
 			signal(SIGQUIT, Server::SignalHandler);
 			ser.setPort(atoi(av[1]));
 			ser.setCurr(-1);
+			ser.setHostname("IRCServer.42.fr");
 			ser.setPassword(av[2]);
 			ser.ServerInit();
 		}

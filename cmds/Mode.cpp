@@ -1,18 +1,13 @@
 #include "../includes/irc.hpp"
 
-void Server::privateChannel(Channel &channel)
+
+
+void Server::privateChannel(Channel &channel, std::string mode)
 {
-	redc("5");
-	if (channel.GetPrivate())
-	{
-		redc("6");
-		channel.setPrivate(false);
-	}
+	if (mode == "+i")
+		channel.setState(ON, 0);
 	else
-	{
-		redc("7");
-		channel.setPrivate(1);
-	}
+		channel.setState(OFF, 0);
 }
 
 void Server::modeChannel(int fd, std::string channelName, std::string *args)
@@ -22,14 +17,14 @@ void Server::modeChannel(int fd, std::string channelName, std::string *args)
 	if (channel == NULL || !isOperator(fd, channel))
 		return ;
 	redc("3");
-	if (args[0] == "+i")
-		privateChannel(*channel);
+	if (args[0] == "+i" || args[0] == "-i")
+		privateChannel(*channel, args[0]);
 	else if (args[0] == "+t")
-		;
+		channel->setState(ON, 0);
 	else if (args[0] == "+k")
-		;
+		channel->setState(ON, 1);
 	else if (args[0] == "+o")
-		;
+		channel->setState(ON, 2);
 	else if (args[0] == "+l")
-		;
+		channel->setState(ON, 3);
 }
