@@ -1,8 +1,6 @@
 #include "../includes/irc.hpp"
 
-
-
-void Server::privateChannel(Channel &channel, std::string mode)
+void Server::modeI(Channel &channel, std::string mode)
 {
 	if (mode == "+i")
 		channel.setState(ON, 0);
@@ -10,21 +8,44 @@ void Server::privateChannel(Channel &channel, std::string mode)
 		channel.setState(OFF, 0);
 }
 
+void Server::modeT(Channel &channel, std::string mode)
+{
+	if (mode == "+t")
+		channel.setState(ON, 1);
+	else
+		channel.setState(OFF, 1);
+}
+
+void Server::modeO(Channel &channel, std::string nickname, std::string mode)
+{
+	(void)nickname;
+	(void)channel;
+	(void)mode;
+	// if (!isClient(nickname))
+	// 	return ;
+	// if (mode == "+t")
+	// {
+		// newChannel.AddOperator(currentClient);
+		// GetClientByNickname(nickname)
+	// }
+	// else
+	// 	channel.setState(OFF, 1);
+}
+
+
 void Server::modeChannel(int fd, std::string channelName, std::string *args)
 {
 	Channel *channel = getChannel(channelName);
-	redc("4");
 	if (channel == NULL || !isOperator(fd, channel))
 		return ;
-	redc("3");
 	if (args[0] == "+i" || args[0] == "-i")
-		privateChannel(*channel, args[0]);
-	else if (args[0] == "+t")
-		channel->setState(ON, 0);
+		modeI(*channel, args[0]);
+	else if (args[0] == "+t" || args[0] == "-t")
+		modeT(*channel, args[0]);
 	else if (args[0] == "+k")
 		channel->setState(ON, 1);
 	else if (args[0] == "+o")
-		channel->setState(ON, 2);
+		modeO(*channel, args[0], args[1]);
 	else if (args[0] == "+l")
 		channel->setState(ON, 3);
 }
