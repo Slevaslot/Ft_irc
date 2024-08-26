@@ -1,4 +1,4 @@
-#include "../includes/cmds.hpp"
+#include "../includes/irc.hpp"
 
 bool Server::isInvite(Client client, Channel channel)
 {

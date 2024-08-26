@@ -8,9 +8,9 @@ CC = c++ -Wall -Wextra -Werror -std=c++98
 NAME = ircserv
 
 # Couleurs
-GREEN = \033[0;32m
-YELLOW = \033[0;33m
-RESET = \033[0m
+GRE := \e[1;32m
+YEL := \e[1;33m
+RESET := \033[0m
 
 # Règles
 all: $(NAME)
@@ -18,7 +18,7 @@ all: $(NAME)
 # Compilation et édition de liens
 $(NAME): $(OBJ)
 	@$(CC) -o $@ $^
-	@echo "$(GREEN)Linking completed. Executable $(NAME) created.$(RESET)"
+	@echo "$(GRE)Linking completed. Executable $(NAME) created.$(RESET)"
 
 # Compilation des .cpp en .o dans le dossier obj
 $(OBJ_DIR)/%.o: %.cpp
@@ -28,12 +28,12 @@ $(OBJ_DIR)/%.o: %.cpp
 # Nettoyage des fichiers objets
 clean:
 	@rm -rf $(OBJ_DIR)
-	@echo "$(YELLOW)Object files cleaned.$(RESET)"
+	@echo "$(YEL)Object files cleaned.$(RESET)"
 
 # Nettoyage complet
 fclean: clean
 	@rm -f $(NAME)
-	@echo "$(YELLOW)Executable $(NAME) removed.$(RESET)"
+	@echo "$(YEL)Executable $(NAME) removed.$(RESET)"
 
 # Recompilation complète
 re: fclean all

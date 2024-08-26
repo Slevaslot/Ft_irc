@@ -1,4 +1,4 @@
-#include "../includes/cmds.hpp"
+#include "../includes/irc.hpp"
 
 void redc(std::string msg)
 {

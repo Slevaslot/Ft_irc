@@ -1,4 +1,4 @@
-#include "../includes/cmds.hpp"
+#include "../includes/irc.hpp"
 
 template <typename T>
 std::string toString(const T& value)
@@ -16,7 +16,7 @@ bool Server::isOperator(int fd, Channel *channel)
 		if (i->GetFd() == fd)
 			return (true);
 	}
-	std::cout << "GET OP PASS\n";
+	redc(GetClients()[GetIndexClient(fd)].GetNickname() + " is not operator");
 	return (false);
 }
 
@@ -33,7 +33,7 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickName)
 			std::cout << RED << "Kick " << nickName << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
 			send_msg(i->GetFd(), message);
-			getChannel(channelName)->EraseClientByIt(i);
+			channel->EraseClientByIt(i);
 			break;
 		}
 	}
@@ -42,6 +42,7 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickName)
 void Server::part(int fd, std::string channelName, std::string nickname)
 {
 	channelName[0] = '#';
+	// (void)nickname;
 	Channel* channel = getChannel(channelName);
 	if (channel == NULL)
 		return;
@@ -50,10 +51,21 @@ void Server::part(int fd, std::string channelName, std::string nickname)
 	{
 		if (it->GetNickname() == nickname)
 		{
-			std::cout << RED << "PART" << WHI << std::endl;
-			std::string message = "PART " + channelName + " :Bye!\r\n";
-			send_msg(fd, message);
-			getChannel(channelName)->EraseClientByIt(it);
+			if (getChannel(channelName)->GetClients().size() == 1)
+			{
+				std::cout << RED << "PART" << WHI << std::endl;
+				std::string message = "PART " + channelName + " :Bye!\r\n";
+				send_msg(fd, message);
+				channels.erase(channels.begin() + GetChannelIndex(channelName));
+			}
+			else
+			{
+				std::cout << RED << "PART" << WHI << std::endl;
+				std::string message = "PART " + channelName + " :Bye!\r\n";
+				send_msg(fd, message);
+				channels[GetChannelIndex(channelName)].EraseClientByIt(it);
+			}
+			break;
 		}
 	}
 }

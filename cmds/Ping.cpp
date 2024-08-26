@@ -1,4 +1,4 @@
-#include "../includes/cmds.hpp"
+#include "../includes/irc.hpp"
 
 Channel *Server::getChannel(std::string channelName)
 {

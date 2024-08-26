@@ -1,8 +1,10 @@
-#include "../includes/cmds.hpp"
+#include "../includes/irc.hpp"
 #include <algorithm>
 
 bool tryJoinChannel(std::string channelName, std::vector<Channel> &channels, Client &currentClient)
 {
+	if (channels.size() == 0)
+		return false;
 	for (size_t i = 0; i < channels.size(); i++)
 	{
 		if (channels[i].GetName() == channelName)

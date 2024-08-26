@@ -1,37 +1,41 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
-#include "client.hpp"
+
 #include "channel.hpp"
 
-class Server //-> class for server
+class Client;
+class Channel;
+
+class Server
 {
 private:
-	int Port; //-> server port
-	int SerSocketFd; //-> server socket file descriptor
-	static bool Signal; //-> static boolean for signal
+	int Port;
+	int SerSocketFd;
+	static bool Signal;
+	int _nodc;
 	std::string _password;
-	std::vector<Client> clients; //-> vector of clients
-	std::vector<struct pollfd> fds; //-> vector of pollfd
+	std::vector<Client> clients;
+	std::vector<struct pollfd> fds;
 	Client currentClient;
-	std::vector<Channel> channels;
 	size_t _curr;
 
 public:
-	Server(){SerSocketFd = -1;} //-> default constructor
+	Server(){SerSocketFd = -1; _nodc = 0;};
 
-	void ServerInit(); //-> server initialization
-	void SerSocket(); //-> server socket creation
+	std::vector<Channel> channels;
+	void ServerInit();
+	void SerSocket();
 	void	setPort(int newport);
 	void	setCurr(size_t c){_curr = c;};
 	void	setPassword(std::string password);
-	void AcceptNewClient(); //-> accept new client
-	void ReceiveNewData(int fd); //-> receive new data from a registered client
+	void AcceptNewClient();
+	void ReceiveNewData(int fd);
 	Channel *getChannel(std::string channelName);
-	static void SignalHandler(int signum); //-> signal handler
+	static void SignalHandler(int signum);
 	void parse_exec_cmd(std::string cmd, int fd);
-	void CloseFds(); //-> close file descriptors
-	void ClearClients(int fd); //-> clear clients
-	int GetClientByFd(int fd)
+	void CloseFds();
+	void ClearClients(int fd);
+	int GetIndexClient(int fd)
 	{
 		int i = -1;
 		std::vector<Client>::iterator it;
@@ -43,8 +47,32 @@ public:
 		}
 		return -1;
 	};
+	int	GetChannelIndex(std::string channelName)
+	{
+		int i = -1;
+		std::vector<Channel>::iterator it;
+		for(it = channels.begin(); it < channels.end(); it++)
+		{
+			++i;
+			if(it->GetName() == channelName)
+				return (i);
+		}
+		return -1;
+	};
+	Client GetClientByFd(int fd)
+	{
+		int i = -1;
+		std::vector<Client>::iterator it;
+		for(it = clients.begin(); it < clients.end(); it++)
+		{
+			++i;
+			if(it->GetFd() == fd)
+				return (*it);
+		}
+		return (clients[clients.size()]);
+	};
 	std::vector<Client> GetClients(){return clients;};
-	void	auth(int fd);
+	void	auth(int fd, int currentClient);
 	void	listChannels(int fd);
 	void	privMsg(std::vector<std::string> cmdSplited, std::string nickName);
 	void	Kick(int fd, std::string channelName, std::string clientName);
@@ -60,6 +88,7 @@ public:
 	bool	isClient(std::string nickname);
 	bool	isInvite(Client client, Channel channel);
 	Client	*GetClientByNickname(std::string nickname);
+	bool	isNicknameValid(const std::string& nickname, int currentClient);
 };
 
 void send_msg(int fd, std::string msg);

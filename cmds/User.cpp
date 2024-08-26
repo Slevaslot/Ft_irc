@@ -1,4 +1,4 @@
-#include "../includes/cmds.hpp"
+#include "../includes/irc.hpp"
 
 void	user(std::string newUsername, Client currentClient)
 {

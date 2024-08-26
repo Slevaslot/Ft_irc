@@ -1,4 +1,4 @@
-#include "../includes/cmds.hpp"
+#include "../includes/irc.hpp"
 
 void pass(std::string pass, std::string rightPass, Client &currentClient)
 {
