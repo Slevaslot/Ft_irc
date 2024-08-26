@@ -32,6 +32,14 @@ void Server::modeO(Channel &channel, std::string nickname, std::string mode)
 	// 	channel.setState(OFF, 1);
 }
 
+void Server::modeK(Channel &channel, std::string mode, std::string key)
+{
+	if (mode == "+k")
+		channel.setState(ON, 2);
+	else
+		channel.setState(OFF, 2);
+	channel.setKey(key);
+}
 
 void Server::modeChannel(int fd, std::string channelName, std::string *args)
 {
@@ -43,7 +51,7 @@ void Server::modeChannel(int fd, std::string channelName, std::string *args)
 	else if (args[0] == "+t" || args[0] == "-t")
 		modeT(*channel, args[0]);
 	else if (args[0] == "+k")
-		channel->setState(ON, 1);
+		modeK(*channel, args[0], args[1]);
 	else if (args[0] == "+o")
 		modeO(*channel, args[0], args[1]);
 	else if (args[0] == "+l")

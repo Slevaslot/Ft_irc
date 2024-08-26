@@ -36,6 +36,17 @@ void Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentCl
 			newChannel.AddOperator(currentClient);
 			channels.push_back(newChannel);
 		}
+		if (channel && channel->getState('k') == ON)
+		{
+			std::cout << "This channel has a key!!!!" << std::endl;
+			if (cmdSplited.size() < 3 || channel->GetKey() != cmdSplited[2])
+			{
+				std::cout << "This channel has a key" << std::endl;
+				std::string kickmsg = ":" + hostname + " 475 " + currentClient.GetNickname() + " " + channel->GetName() + " :Bad channel key\r\n";
+				send_msg(fd, kickmsg);
+				return;
+			}
+		}
 		if (channel && channel->getState('i') == ON && !isInvite(currentClient, *channel))
 		{
 			std::cout << "You are not invited to this channel" << std::endl;

@@ -86,8 +86,6 @@ class Server
 		bool	isOperator(int fd, Channel *channel);
 		void	topicChannel(int fd, std::string channelName, std::string topic);
 		void	modeChannel(int fd, std::string channelName, std::string *args);
-		void	modeI(Channel &channel, std::string mode);
-		void	modeT(Channel &channel, std::string mode);
 		void	inviteChannel(int fd, std::string nickName, std::string channelName);
 		bool	isClient(std::string nickname);
 		bool	isInvite(Client client, Channel channel);
@@ -96,6 +94,10 @@ class Server
 		void sendWelcomeMessage(int fd, const std::string& nickname);
 		bool tryJoinChannel(std::string channelName, std::vector<Channel> &channels, Client &currentClient);
 		bool isClientByFd(int fd, Channel *channel);
+
+		void	modeK(Channel &channel, std::string mode, std::string key);
+		void	modeI(Channel &channel, std::string mode);
+		void	modeT(Channel &channel, std::string mode);
 		void	modeO(Channel &channel, std::string nickname, std::string mode);
 };
 
