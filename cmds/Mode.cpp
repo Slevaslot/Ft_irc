@@ -82,7 +82,7 @@ void Server::modeChannel(int fd, std::string channelName, std::string *args)
 		modeI(*channel, args[0]);
 	else if (args[0] == "+t" || args[0] == "-t")
 		modeT(*channel, args[0]);
-	else if (args[0] == "+k")
+	else if (args->size() == 2 && (args[0] == "+k"))
 		modeK(*channel, args[0], args[1]);
 	else if (args[0] == "+o" || args[0] == "-o")
 		modeO(*channel, args[0], args[1]);

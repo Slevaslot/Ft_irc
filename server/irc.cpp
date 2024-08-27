@@ -20,27 +20,6 @@ std::string toString(const T &value)
 	return oss.str();
 }
 
-// bool Server::defaultNickname(Client& client)
-// {
-// 	std::vector<Client>::iterator it = clients.begin();
-// 	int i = 0;s
-
-// 	while (it != clients.end())
-// 	{
-// 		if (it->GetNickname() == client.GetNickname() || client.GetNickname().empty())
-// 		{
-// 			client.setNickname("user" + toString(i));
-// 			i++;
-// 			it = clients.begin();
-// 		}
-// 		else
-// 			it++;
-// 	}
-// 	if (i == 0)
-// 		return true;
-// 	return false;
-// }
-
 void Server::isNicknameValid(Client &client)
 {
 	int i = 0, j = 0;
@@ -79,46 +58,112 @@ void print_command(std::vector<std::string> cmds)
 	std::cout << "Size: " << cmds.size() << '}' << WHI << std::endl;
 }
 
+void Server::nickCmd(std::vector<std::string> cmdSplited, int currentClient)
+{
+	clients[currentClient].setNickname(cmdSplited[1]);
+	isNicknameValid(clients[currentClient]);
+	// auth(clients[currentClient].GetFd(), currentClient);
+}
+
+void Server::user(std::string cmdArg, int currentClient)
+{
+	redc("here");
+	std::string username = cmdArg;
+	clients[currentClient].setUsername(cmdArg);
+	auth(clients[currentClient].GetFd(), currentClient);
+}
+
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
 	int currentClient = GetIndexClient(fd);
-
-	if (cmdSplited.empty())
+	if (cmdSplited[0] == "CAP")
 		return;
-
-	std::string command = cmdSplited[0];
+	std::vector<std::string>::iterator it;
 	print_command(cmdSplited);
-	if (command == "PASS" && cmdSplited.size() == 2)
-		pass(cmdSplited[1], _password, clients[currentClient]);
-	else if ((command == "USER" || command == "userhost") && cmdSplited.size() >= 2)
+	// if (cmdSplited.empty())
+	// 	return;
+	int c = -1;
+	c = findCmd(cmdSplited[0]);
+	if (c == -1)
+		return;
+	std::cout << c << std::endl;
+	switch (c)
 	{
-		std::string username = cmdSplited[1];
-		clients[currentClient].setUsername(cmdSplited[1]);
-	}
-	else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2)
-	{
-		clients[currentClient].setNickname(cmdSplited[1]);
-		isNicknameValid(clients[currentClient]);
-		auth(clients[currentClient].GetFd(), currentClient);
-	}
-	else if (command == "PRIVMSG" || command == "PING")
+	case (PASS):
+		if (cmdSplited.size() == 2)
+			pass(cmdSplited[1], _password, clients[currentClient]);
+		break;
+	case (USER):
+		user(cmdSplited[1], currentClient);
+		break;
+	case (NICK):
+		if (cmdSplited.size() == 2)
+			nickCmd(cmdSplited, currentClient);
+		break;
+	case (PRIVMSG):
 		ping(cmdSplited, fd, clients[currentClient].GetNickname());
-	else if (command == "JOIN")
+		break;
+	case (JOIN):
 		join(cmdSplited, fd, clients[currentClient]);
-	else if (command == "LIST")
-		listChannels(fd);
-	else if (command == "KICK")
+		break;
+	case (LIST):
+		if (cmdSplited.size() == 1)
+			listChannels(fd);
+		break;
+	case (KICK):
 		kickChannel(fd, cmdSplited[2], cmdSplited[3]);
-	else if (command == "TOPIC" && cmdSplited.size() == 4)
-		topicChannel(fd, cmdSplited[2], cmdSplited[3]);
-	else if (command == "PART" && cmdSplited.size() == 3)
-		part(fd, cmdSplited[2], clients[currentClient].GetNickname());
-	else if (command == "MODE" && cmdSplited.size() >= 3 && cmdSplited.size() <= 4)
-		modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
-	else if (command == "INVITE" && cmdSplited.size() == 3)
-		inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
-}
+		break;
+	case (TOPIC):
+		if (cmdSplited.size() == 4)
+			topicChannel(fd, cmdSplited[2], cmdSplited[3]);
+		break;
+	case (PART):
+		if (cmdSplited.size() == 3)
+			part(fd, cmdSplited[2], clients[currentClient].GetNickname());
+		break;
+	case (MODE):
+		if (cmdSplited.size() >= 3 && cmdSplited.size() <= 4)
+			modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
+		break;
+	case (INVITE):
+		if (cmdSplited.size() == 3)
+			inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
+		break;
+	}
+};
+
+// if (cmdSplited.empty())
+// 	return;
+// std::string command = cmdSplited[0];
+// print_command(cmdSplited);
+// if (command == "PASS" && cmdSplited.size() == 2)
+// 	pass(cmdSplited[1], _password, clients[currentClient]);
+// else if ((command == "USER" || command == "userhost") && cmdSplited.size() >= 2)
+// {
+// 	std::string username = cmdSplited[1];
+// 	clients[currentClient].setUsername(cmdSplited[1]);
+// }
+// else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2)
+// {
+// 	nickCmd(cmdSplited, currentClient);
+// }
+// else if (command == "PRIVMSG" || command == "PING")
+// 	ping(cmdSplited, fd, clients[currentClient].GetNickname());
+// else if (command == "JOIN")
+// 	join(cmdSplited, fd, clients[currentClient]);
+// else if (command == "LIST")
+// 	listChannels(fd);
+// else if (command == "KICK")
+// 	kickChannel(fd, cmdSplited[2], cmdSplited[3]);
+// else if (command == "TOPIC" && cmdSplited.size() == 4)
+// 	topicChannel(fd, cmdSplited[2], cmdSplited[3]);
+// else if (command == "PART" && cmdSplited.size() == 3)
+// 	part(fd, cmdSplited[2], clients[currentClient].GetNickname());
+// else if (command == "MODE" && cmdSplited.size() >= 3 && cmdSplited.size() <= 4)
+// 	modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
+// else if (command == "INVITE" && cmdSplited.size() == 3)
+// 	inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
 
 void Server::ClearClients(int fd)
 {

@@ -26,3 +26,29 @@ std::vector<std::string> tokenizeCommand(std::string cmd)
 		result.push_back(token);
 	return result;
 }
+
+int findCmd(std::string cmdToFind)
+{
+	std::string cmds[11] = {
+		"PASS",
+		"NICK",
+		"USER",
+		"PRIVMSG",
+		"JOIN",
+		"LIST",
+		"KICK",
+		"TOPIC",
+		"PART",
+		"MODE",
+		"INVITE",
+
+	};
+	for (int i = -1; i < 11; ++i)
+	{
+		if (cmds[i] == cmdToFind)
+		{
+			return (i);
+		}
+	}
+	return (-1);
+}

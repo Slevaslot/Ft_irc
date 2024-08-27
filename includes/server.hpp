@@ -2,9 +2,23 @@
 #define SERVER_HPP
 
 #include "channel.hpp"
-
+#include <functional>
 class Client;
 class Channel;
+
+/*-------cmds define------*/
+
+#define PASS 0
+#define NICK 1
+#define USER 2
+#define PRIVMSG 3
+#define JOIN 4
+#define LIST 5
+#define KICK 6
+#define TOPIC 7
+#define PART 8
+#define MODE 9
+#define INVITE 10
 
 class Server
 {
@@ -21,7 +35,10 @@ private:
 	std::vector<Channel> channels;
 
 public:
-	Server() { SerSocketFd = -1; };
+	Server()
+	{
+		SerSocketFd = -1;
+	};
 	void ServerInit();
 	void SerSocket();
 	void AcceptNewClient();
@@ -37,6 +54,8 @@ public:
 
 	/*----------Cmds----------*/
 
+	void user(std::string cmdArg, int currentClient);
+	void nickCmd(std::vector<std::string> cmdSplited, int currentClient);
 	void parse_exec_cmd(std::string cmd, int fd);
 	void privMsg(std::vector<std::string> cmdSplited, std::string nickname);
 	void Kick(int fd, std::string channelName, std::string clientName);
@@ -90,5 +109,6 @@ void send_msg(int fd, std::string msg);
 void redc(std::string msg);
 std::vector<std::string> splitLines(std::string str);
 std::vector<std::string> tokenizeCommand(std::string cmd);
+int findCmd(std::string cmdToFind);
 
 #endif
