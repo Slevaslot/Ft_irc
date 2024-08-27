@@ -38,24 +38,10 @@ class Channel
 		void sendMsgTo(std::string msg, int fd);
 		void setKey(std::string key) { _key = key; };
 		void sendMsgAllClientsEx(std::string msg, int fd);
-		void setState(State state, int index){
-				_state[index] = state;
-		};
-		State getState(char mode){
-			switch(mode)
-			{
-				case 'i':
-					return _state[0];
-				case 't':
-					return _state[1];
-				case 'k':
-					return _state[2];
-				case 'o':
-					return _state[3];
-				case 'l':
-					return _state[4];
-			}
-			return OFF;};
+		void setState(State state, int index){_state[index] = state;};
+		State getState(char mode);
+		void removeOperator(std::vector<Client>::iterator it);
+
 };
 
 #endif

@@ -7,16 +7,15 @@ Channel *Server::getChannel(std::string channelName)
 		if (channels[i].GetName() == channelName)
 			return &channels[i];
 	}
-	std::cout << RED << "No channel named : " << channelName << WHI << std::endl;
 	// std::cout << "GET CHANNEL PASS " << channelName << std::endl;
 	return NULL;
 }
 
-void	Server::privMsg(std::vector<std::string> cmdSplited, std::string nickName)
+void	Server::privMsg(std::vector<std::string> cmdSplited, std::string nickname)
 {
 	// if ()
 	// (void)fd;
-	(void)nickName;
+	(void)nickname;
 	std::vector<Client>::iterator it;
 	std::string pong = ":t Private message" + cmdSplited[2] +"\r\n";
 	for(it = clients.begin(); it < clients.end(); it++)
@@ -30,19 +29,20 @@ void	Server::privMsg(std::vector<std::string> cmdSplited, std::string nickName)
 	}
 }
 
-void	Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickName)
+void	Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickname)
 {
 	if (getChannel(cmdSplited[1]))
 	{
 		getChannel(cmdSplited[1])->sendMsgAllClientsEx(cmdSplited[2], fd);
 	}
-	else if (cmdSplited[2] == ":PING" || cmdSplited[0] == "PING" || cmdSplited.size() == 5)
+	else if (cmdSplited[0] == "PING" && (cmdSplited.size() == 5 || cmdSplited.size() == 2))
 	{
-		std::string pong = ":t PONG " + nickName + " " + cmdSplited[1] + "\r\n";
+		std::cout << "pong" << std::endl;
+		std::string pong = ":t PONG " + nickname + " " + cmdSplited[1] + "\r\n";
 		send_msg(fd, pong);
 	}
 	else
 	{
-		privMsg(cmdSplited, nickName);
+		privMsg(cmdSplited, nickname);
 	}
 }

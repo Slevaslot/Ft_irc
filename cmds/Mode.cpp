@@ -16,29 +16,53 @@ void Server::modeT(Channel &channel, std::string mode)
 		channel.setState(OFF, 1);
 }
 
-void Server::modeO(Channel &channel, std::string nickname, std::string mode)
+bool Server::isClientByNickname(Channel channel, std::string nickname)
 {
-	(void)nickname;
-	(void)channel;
-	(void)mode;
-	// if (!isClient(nickname))
-	// 	return ;
-	// if (mode == "+t")
-	// {
-		// newChannel.AddOperator(currentClient);
-		// GetClientByNickname(nickname)
-	// }
-	// else
-	// 	channel.setState(OFF, 1);
+	std::vector<Client> clients = channel.GetClients();
+	for(std::vector<Client>::iterator i = clients.begin(); i < clients.end(); i++)
+	{
+		if (i->GetNickname() == nickname)
+			return (true);
+	}
+	return (false);
 }
 
-void Server::modeK(Channel &channel, std::string mode, std::string key)
+bool Server::isOperatorByNickname(Channel channel, std::string nickname)
 {
-	if (mode == "+k")
-		channel.setState(ON, 2);
+	std::vector<Client> operators = channel.GetOperators();
+	for(std::vector<Client>::iterator i = operators.begin(); i < operators.end(); i++)
+	{
+		if (i->GetNickname() == nickname)
+			return (true);
+	}
+	return (false);
+}
+
+void Server::modeO(Channel &channel, std::string mode, std::string nickname)
+{
+	if (!isClientByNickname(channel, nickname))
+		return ;
+	if (mode == "+o")
+	{
+		if (!isOperatorByNickname(channel, nickname))
+		{
+			channel.AddOperator(*GetClientByNickname(nickname));
+		}
+	}
 	else
-		channel.setState(OFF, 2);
-	channel.setKey(key);
+	{
+		if (isOperatorByNickname(channel, nickname))
+		{
+			std::vector<Client> operators = channel.GetOperators();
+			for(std::vector<Client>::iterator it = operators.begin(); it < operators.end(); it++)
+			{
+				if (it->GetNickname() == nickname)
+				{
+					channel.removeOperator(it);
+				}
+			}
+		}
+	}
 }
 
 void Server::modeChannel(int fd, std::string channelName, std::string *args)
@@ -51,8 +75,8 @@ void Server::modeChannel(int fd, std::string channelName, std::string *args)
 	else if (args[0] == "+t" || args[0] == "-t")
 		modeT(*channel, args[0]);
 	else if (args[0] == "+k")
-		modeK(*channel, args[0], args[1]);
-	else if (args[0] == "+o")
+		channel->setState(ON, 1);
+	else if (args[0] == "+o" || args[0] == "-o")
 		modeO(*channel, args[0], args[1]);
 	else if (args[0] == "+l")
 		channel->setState(ON, 3);

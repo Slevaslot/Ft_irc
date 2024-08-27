@@ -20,7 +20,7 @@ bool Server::isOperator(int fd, Channel *channel)
 	return (false);
 }
 
-void Server::kickChannel(int fd, std::string channelName, std::string nickName)
+void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 {
 	Channel* channel = getChannel("#" + channelName);
 	if (channel == NULL || !isOperator(fd, channel))
@@ -28,9 +28,9 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickName)
 	std::vector<Client> clients = channel->GetClients();
 	for(std::vector<Client>::iterator i = clients.begin(); i < clients.end() ; i++)
 	{
-		if (":" + i->GetNickname() == nickName)
+		if (":" + i->GetNickname() == nickname)
 		{
-			std::cout << RED << "Kick " << nickName << WHI << std::endl;
+			std::cout << RED << "Kick " << nickname << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
 			send_msg(i->GetFd(), message);
 			channel->EraseClientByIt(i);

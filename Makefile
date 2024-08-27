@@ -1,7 +1,7 @@
 # Variables
 SRC = irc.cpp text_processing.cpp cmds/Ping.cpp cmds/Pass.cpp cmds/Nick.cpp \
       cmds/User.cpp cmds/Join.cpp cmds/Channel.cpp cmds/List.cpp cmds/Kick.cpp \
-      cmds/Topic.cpp cmds/Mode.cpp cmds/Invite.cpp cmds/Tools.cpp
+      cmds/Topic.cpp cmds/Mode.cpp cmds/Invite.cpp cmds/Tools.cpp server/server.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 CC = c++ -Wall -Wextra -Werror -std=c++98
@@ -22,7 +22,8 @@ $(NAME): $(OBJ)
 
 # Compilation des .cpp en .o dans le dossier obj
 $(OBJ_DIR)/%.o: %.cpp
-	@mkdir -p $(OBJ_DIR)/cmds  # Crée les répertoires si nécessaire
+	@mkdir -p $(OBJ_DIR)/cmds
+	@mkdir -p $(OBJ_DIR)/server # Crée les répertoires si nécessaire
 	@$(CC) -c $< -o $@
 
 # Nettoyage des fichiers objets

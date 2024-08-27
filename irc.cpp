@@ -98,7 +98,7 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		isNicknameValid(clients[currentClient]);
 		auth(clients[currentClient].GetFd(), currentClient);
     }
-	else if ((command == "PRIVMSG"))
+	else if (command == "PRIVMSG" || command == "PING")
 		ping(cmdSplited, fd, clients[currentClient].GetNickname());
 	else if (command == "JOIN")
 		join(cmdSplited, fd, clients[currentClient]);
@@ -106,13 +106,13 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		listChannels(fd);
 	else if (command == "KICK" )
 		kickChannel(fd, cmdSplited[2], cmdSplited[3]);
-	else if (command == "TOPIC")
+	else if (command == "TOPIC" && cmdSplited.size() == 4)
 		topicChannel(fd, cmdSplited[2], cmdSplited[3]);
-	else if (command == "PART" && cmdSplited.size() >= 2 && cmdSplited.size() <= 3)
+	else if (command == "PART" && cmdSplited.size() == 3)
 		part(fd, cmdSplited[2],clients[currentClient].GetNickname());
-	else if (command == "MODE")
+	else if (command == "MODE" && cmdSplited.size() >= 3 && cmdSplited.size() <= 4)
 		modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
-	else if (command == "INVITE")
+	else if (command == "INVITE" && cmdSplited.size() == 3)
 		inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
 }
 

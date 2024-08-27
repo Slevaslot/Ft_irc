@@ -50,3 +50,31 @@ void Channel::sendMsgAllClientsEx(std::string msg, int fd) {
 		}
 	}
 }
+
+State Channel::getState(char mode)
+{
+	switch(mode)
+	{
+		case 'i':
+			return _state[0];
+		case 't':
+			return _state[1];
+		case 'k':
+			return _state[2];
+		case 'o':
+			return _state[3];
+		case 'l':
+			return _state[4];
+	}
+	return OFF;
+}
+
+void Channel::removeOperator(std::vector<Client>::iterator it)
+{
+		std::cout << "BERASE\n";
+	if (it != _operators.end())
+	{
+		std::cout << "ERASE\n";
+		_operators.erase(it);
+	}
+}
