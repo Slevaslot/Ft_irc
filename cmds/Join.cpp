@@ -3,12 +3,13 @@
 
 bool Server::tryJoinChannel(std::string channelName, std::vector<Channel> &channels, Client &currentClient)
 {
-	Channel* channel = getChannel(channelName);
+	Channel *channel = getChannel(channelName);
 
-	if (channels.size() == 0 || channel->getState('i') == ON )
+	if (channels.size() == 0 || channel->getState('i') == ON)
 		return false;
 
-	if (channel->getState('i') == ON && !isInvite(currentClient, *channel)) {
+	if (channel->getState('i') == ON && !isInvite(currentClient, *channel))
+	{
 		std::cout << "You are not invited to this channel" << std::endl;
 		return false;
 	}
@@ -28,7 +29,7 @@ void Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentCl
 {
 	if (cmdSplited.size() >= 2)
 	{
-		Channel* channel = getChannel(cmdSplited[1]);
+		Channel *channel = getChannel(cmdSplited[1]);
 		if (!channel)
 		{
 			Channel newChannel(cmdSplited[1]);

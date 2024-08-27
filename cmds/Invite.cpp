@@ -3,7 +3,7 @@
 bool Server::isInvite(Client client, Channel channel)
 {
 	std::vector<Client> guests = channel.GetGuests();
-	for(std::vector<Client>::iterator i = guests.begin(); i < guests.end(); i++)
+	for (std::vector<Client>::iterator i = guests.begin(); i < guests.end(); i++)
 	{
 		if (i->GetFd() == client.GetFd())
 			return (true);
@@ -25,7 +25,7 @@ Client *Server::GetClientByNickname(std::string nickname)
 
 void Server::inviteChannel(int fd, std::string nickname, std::string channelName)
 {
-	Channel* channel = getChannel("#" + channelName);
+	Channel *channel = getChannel("#" + channelName);
 	if (channel == NULL || !isOperator(fd, channel) || !GetClientByNickname(nickname))
 		return;
 	std::cout << GRE << "client added" << WHI << std::endl;

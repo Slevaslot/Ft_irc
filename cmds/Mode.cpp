@@ -19,7 +19,7 @@ void Server::modeT(Channel &channel, std::string mode)
 bool Server::isClientByNickname(Channel channel, std::string nickname)
 {
 	std::vector<Client> clients = channel.GetClients();
-	for(std::vector<Client>::iterator i = clients.begin(); i < clients.end(); i++)
+	for (std::vector<Client>::iterator i = clients.begin(); i < clients.end(); i++)
 	{
 		if (i->GetNickname() == nickname)
 			return (true);
@@ -30,7 +30,7 @@ bool Server::isClientByNickname(Channel channel, std::string nickname)
 bool Server::isOperatorByNickname(Channel channel, std::string nickname)
 {
 	std::vector<Client> operators = channel.GetOperators();
-	for(std::vector<Client>::iterator i = operators.begin(); i < operators.end(); i++)
+	for (std::vector<Client>::iterator i = operators.begin(); i < operators.end(); i++)
 	{
 		if (i->GetNickname() == nickname)
 			return (true);
@@ -41,7 +41,7 @@ bool Server::isOperatorByNickname(Channel channel, std::string nickname)
 void Server::modeO(Channel &channel, std::string mode, std::string nickname)
 {
 	if (!isClientByNickname(channel, nickname))
-		return ;
+		return;
 	if (mode == "+o")
 	{
 		if (!isOperatorByNickname(channel, nickname))
@@ -54,7 +54,7 @@ void Server::modeO(Channel &channel, std::string mode, std::string nickname)
 		if (isOperatorByNickname(channel, nickname))
 		{
 			std::vector<Client> operators = channel.GetOperators();
-			for(std::vector<Client>::iterator it = operators.begin(); it < operators.end(); it++)
+			for (std::vector<Client>::iterator it = operators.begin(); it < operators.end(); it++)
 			{
 				if (it->GetNickname() == nickname)
 				{
@@ -64,18 +64,26 @@ void Server::modeO(Channel &channel, std::string mode, std::string nickname)
 		}
 	}
 }
+void Server::modeK(Channel &channel, std::string mode, std::string key)
+{
+	if (mode == "+k")
+		channel.setState(ON, 2);
+	else
+		channel.setState(OFF, 2);
+	channel.setKey(key);
+}
 
 void Server::modeChannel(int fd, std::string channelName, std::string *args)
 {
 	Channel *channel = getChannel(channelName);
 	if (channel == NULL || !isOperator(fd, channel))
-		return ;
+		return;
 	if (args[0] == "+i" || args[0] == "-i")
 		modeI(*channel, args[0]);
 	else if (args[0] == "+t" || args[0] == "-t")
 		modeT(*channel, args[0]);
 	else if (args[0] == "+k")
-		channel->setState(ON, 1);
+		modeK(*channel, args[0], args[1]);
 	else if (args[0] == "+o" || args[0] == "-o")
 		modeO(*channel, args[0], args[1]);
 	else if (args[0] == "+l")

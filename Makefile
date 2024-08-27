@@ -1,5 +1,5 @@
 # Variables
-SRC = irc.cpp text_processing.cpp cmds/Ping.cpp cmds/Pass.cpp cmds/Nick.cpp \
+SRC = server/irc.cpp server/text_processing.cpp cmds/Ping.cpp cmds/Pass.cpp cmds/Nick.cpp \
       cmds/User.cpp cmds/Join.cpp cmds/Channel.cpp cmds/List.cpp cmds/Kick.cpp \
       cmds/Topic.cpp cmds/Mode.cpp cmds/Invite.cpp cmds/Tools.cpp server/server.cpp
 OBJ_DIR = obj

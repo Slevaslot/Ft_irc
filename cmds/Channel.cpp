@@ -1,8 +1,19 @@
 #include "../includes/irc.hpp"
 
+Channel::Channel(std::string name)
+{
+	_name = name;
+	_topic = "undefined";
+	_state[0] = OFF;
+	_state[1] = OFF;
+	_state[2] = OFF;
+	_state[3] = OFF;
+	_state[4] = OFF;
+};
+
 Client Channel::GetClient(std::string clientName)
 {
-	for(size_t i = 0; i < _clients.size(); i++)
+	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i].GetUsername() == clientName)
 			return (_clients[i]);
@@ -10,8 +21,9 @@ Client Channel::GetClient(std::string clientName)
 	return (_clients[_clients.size()]);
 }
 
-void Channel::sendMsgTo(std::string msg, int fd) {
-	for(size_t i = 0; i < _clients.size() ; i++)
+void Channel::sendMsgTo(std::string msg, int fd)
+{
+	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i].GetFd() == fd)
 		{
@@ -34,14 +46,15 @@ std::vector<Client>::iterator Channel::GetThisClient(Client cli)
 	return (it);
 }
 
-void Channel::sendMsgAllClientsEx(std::string msg, int fd) {
+void Channel::sendMsgAllClientsEx(std::string msg, int fd)
+{
 	Client currentClient;
-	for(size_t i = 0; i < _clients.size() ; i++)
+	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i].GetFd() == fd)
 			currentClient = _clients[i];
 	}
-	for(size_t i = 0; i < _clients.size() ; i++)
+	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i].GetFd() != fd)
 		{
@@ -53,25 +66,25 @@ void Channel::sendMsgAllClientsEx(std::string msg, int fd) {
 
 State Channel::getState(char mode)
 {
-	switch(mode)
+	switch (mode)
 	{
-		case 'i':
-			return _state[0];
-		case 't':
-			return _state[1];
-		case 'k':
-			return _state[2];
-		case 'o':
-			return _state[3];
-		case 'l':
-			return _state[4];
+	case 'i':
+		return _state[0];
+	case 't':
+		return _state[1];
+	case 'k':
+		return _state[2];
+	case 'o':
+		return _state[3];
+	case 'l':
+		return _state[4];
 	}
 	return OFF;
 }
 
 void Channel::removeOperator(std::vector<Client>::iterator it)
 {
-		std::cout << "BERASE\n";
+	std::cout << "BERASE\n";
 	if (it != _operators.end())
 	{
 		std::cout << "ERASE\n";

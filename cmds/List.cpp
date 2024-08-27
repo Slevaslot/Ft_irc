@@ -1,7 +1,7 @@
 #include "../includes/irc.hpp"
 
 template <typename T>
-std::string toString(const T& value)
+std::string toString(const T &value)
 {
 	std::ostringstream oss;
 	oss << value;
@@ -20,7 +20,7 @@ void Server::listChannels(int fd)
 	{
 		std::string membersList;
 		send_msg(fd, ":t List of channels :\r\n");
-		for(size_t i = 0; i < channels.size(); i++)
+		for (size_t i = 0; i < channels.size(); i++)
 		{
 			send_msg(fd, ":t Channel name : " + channels[i].GetName() + "\r\n");
 			send_msg(fd, ":t Topic: " + channels[i].GetTopic() + "\r\n");
@@ -31,7 +31,6 @@ void Server::listChannels(int fd)
 			}
 			send_msg(fd, ":t List of members : " + membersList + " \r\n");
 			membersList.clear();
-
 		}
 	}
 }

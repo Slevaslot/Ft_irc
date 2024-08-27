@@ -11,14 +11,14 @@ Channel *Server::getChannel(std::string channelName)
 	return NULL;
 }
 
-void	Server::privMsg(std::vector<std::string> cmdSplited, std::string nickname)
+void Server::privMsg(std::vector<std::string> cmdSplited, std::string nickname)
 {
 	// if ()
 	// (void)fd;
 	(void)nickname;
 	std::vector<Client>::iterator it;
-	std::string pong = ":t Private message" + cmdSplited[2] +"\r\n";
-	for(it = clients.begin(); it < clients.end(); it++)
+	std::string pong = ":t Private message" + cmdSplited[2] + "\r\n";
+	for (it = clients.begin(); it < clients.end(); it++)
 	{
 		// std::cout << it->GetNickname();
 		if (it->GetNickname() == cmdSplited[1])
@@ -29,7 +29,7 @@ void	Server::privMsg(std::vector<std::string> cmdSplited, std::string nickname)
 	}
 }
 
-void	Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickname)
+void Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickname)
 {
 	if (getChannel(cmdSplited[1]))
 	{

@@ -1,4 +1,4 @@
-#include "includes/irc.hpp"
+#include "../includes/irc.hpp"
 
 std::vector<std::string> splitLines(std::string str)
 {
@@ -9,7 +9,7 @@ std::vector<std::string> splitLines(std::string str)
 	while (std::getline(ss, line))
 	{
 		size_t pos = line.find_first_of("\r\n");
-		if(pos != std::string::npos)
+		if (pos != std::string::npos)
 			line = line.substr(0, pos);
 		result.push_back(line);
 	}

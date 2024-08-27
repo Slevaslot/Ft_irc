@@ -1,7 +1,7 @@
 #include "../includes/irc.hpp"
 
 template <typename T>
-std::string toString(const T& value)
+std::string toString(const T &value)
 {
 	std::ostringstream oss;
 	oss << value;
@@ -11,7 +11,7 @@ std::string toString(const T& value)
 bool Server::isClientByFd(int fd, Channel *channel)
 {
 	std::vector<Client> clients = channel->GetClients();
-	for(std::vector<Client>::iterator i = clients.begin(); i < clients.end(); i++)
+	for (std::vector<Client>::iterator i = clients.begin(); i < clients.end(); i++)
 	{
 		if (i->GetFd() == fd)
 			return (true);
@@ -23,27 +23,27 @@ bool Server::isClientByFd(int fd, Channel *channel)
 void Server::topicChannel(int fd, std::string channelName, std::string topic)
 {
 	channelName[0] = '#';
-	Channel* channel = getChannel(channelName);
+	Channel *channel = getChannel(channelName);
 	if (channel == NULL)
-		return ;
+		return;
 	redc("1");
 	if (channel->getState('t') == ON)
 	{
-	redc("2");
+		redc("2");
 
 		if (!isOperator(fd, channel))
 		{
-	redc("3");
+			redc("3");
 
-			return ;
+			return;
 		}
 	}
 	redc("4");
 	if (!isClientByFd(fd, channel))
 	{
 		redc("5");
-		return ;
+		return;
 	}
 	channel->setTopic(topic);
-		redc("7");
+	redc("7");
 }
