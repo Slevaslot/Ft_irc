@@ -1,78 +1,5 @@
 #include "../includes/irc.hpp"
 
-void send_msg(int fd, std::string msg)
-{
-	send(fd, msg.c_str(), msg.size(), 0);
-}
-
-void Server::sendWelcomeMessage(int fd, const std::string &nickname)
-{
-	std::string welcomeMsg = ":" + hostname + " 001 " + nickname + " :Welcome to the Internet Relay Network " + nickname + "!~" + nickname + "@" + hostname + "\r\n";
-	send_msg(fd, welcomeMsg);
-}
-
-template <typename T>
-std::string toString(const T &value)
-{
-	std::ostringstream oss;
-	oss << value;
-
-	return oss.str();
-}
-
-void Server::isNicknameValid(Client &client)
-{
-	int i = 0, j = 0;
-
-	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); NULL)
-	{
-		if (it->GetNickname() == client.GetNickname() || client.GetNickname().empty())
-		{
-			it++;
-			j++;
-		}
-		else
-			it++;
-		if (j > 1)
-		{
-			client.setNickname("user" + toString(i));
-			i++;
-			j = 0;
-			it = clients.begin();
-		}
-	}
-}
-
-void Server::auth(int fd, int currentClient)
-{
-	std::cout << clients[currentClient].GetNickname() << " is trying to connect" << std::endl;
-	if (clients[currentClient].GetPassword() == _password && clients[currentClient].GetNickname() != "\0")
-		sendWelcomeMessage(fd, clients[currentClient].GetNickname());
-}
-
-void print_command(std::vector<std::string> cmds)
-{
-	std::cout << YEL << "Command : " << cmds[0] << " {";
-	for (size_t i = 1; i < cmds.size(); i++)
-		std::cout << "Arg[" << i << "]: " << cmds[i] << " | ";
-	std::cout << "Size: " << cmds.size() << '}' << WHI << std::endl;
-}
-
-void Server::nickCmd(std::vector<std::string> cmdSplited, int currentClient)
-{
-	clients[currentClient].setNickname(cmdSplited[1]);
-	isNicknameValid(clients[currentClient]);
-	// auth(clients[currentClient].GetFd(), currentClient);
-}
-
-void Server::user(std::string cmdArg, int currentClient)
-{
-	redc("here");
-	std::string username = cmdArg;
-	clients[currentClient].setUsername(cmdArg);
-	auth(clients[currentClient].GetFd(), currentClient);
-}
-
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
@@ -81,8 +8,6 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		return;
 	std::vector<std::string>::iterator it;
 	print_command(cmdSplited);
-	// if (cmdSplited.empty())
-	// 	return;
 	int c = -1;
 	c = findCmd(cmdSplited[0]);
 	if (c == -1)
@@ -90,6 +15,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	std::cout << c << std::endl;
 	switch (c)
 	{
+		/*-------Identify--------*/
+
 	case (PASS):
 		if (cmdSplited.size() == 2)
 			pass(cmdSplited[1], _password, clients[currentClient]);
@@ -101,9 +28,9 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		if (cmdSplited.size() == 2)
 			nickCmd(cmdSplited, currentClient);
 		break;
-	case (PRIVMSG):
-		ping(cmdSplited, fd, clients[currentClient].GetNickname());
-		break;
+
+		/*------Channels manage-----*/
+
 	case (JOIN):
 		join(cmdSplited, fd, clients[currentClient]);
 		break;
@@ -130,70 +57,11 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		if (cmdSplited.size() == 3)
 			inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
 		break;
+	case (PRIVMSG):
+		ping(cmdSplited, fd, clients[currentClient].GetNickname());
+		break;
 	}
 };
-
-// if (cmdSplited.empty())
-// 	return;
-// std::string command = cmdSplited[0];
-// print_command(cmdSplited);
-// if (command == "PASS" && cmdSplited.size() == 2)
-// 	pass(cmdSplited[1], _password, clients[currentClient]);
-// else if ((command == "USER" || command == "userhost") && cmdSplited.size() >= 2)
-// {
-// 	std::string username = cmdSplited[1];
-// 	clients[currentClient].setUsername(cmdSplited[1]);
-// }
-// else if (cmdSplited[0] == "NICK" && cmdSplited.size() == 2)
-// {
-// 	nickCmd(cmdSplited, currentClient);
-// }
-// else if (command == "PRIVMSG" || command == "PING")
-// 	ping(cmdSplited, fd, clients[currentClient].GetNickname());
-// else if (command == "JOIN")
-// 	join(cmdSplited, fd, clients[currentClient]);
-// else if (command == "LIST")
-// 	listChannels(fd);
-// else if (command == "KICK")
-// 	kickChannel(fd, cmdSplited[2], cmdSplited[3]);
-// else if (command == "TOPIC" && cmdSplited.size() == 4)
-// 	topicChannel(fd, cmdSplited[2], cmdSplited[3]);
-// else if (command == "PART" && cmdSplited.size() == 3)
-// 	part(fd, cmdSplited[2], clients[currentClient].GetNickname());
-// else if (command == "MODE" && cmdSplited.size() >= 3 && cmdSplited.size() <= 4)
-// 	modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
-// else if (command == "INVITE" && cmdSplited.size() == 3)
-// 	inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
-
-void Server::ClearClients(int fd)
-{
-	for (size_t i = 0; i < fds.size(); i++)
-	{
-		if (fds[i].fd == fd)
-		{
-			fds.erase(fds.begin() + i);
-			break;
-		}
-	}
-	for (size_t i = 0; i < clients.size(); i++)
-	{
-		if (clients[i].GetFd() == fd)
-		{
-			clients.erase(clients.begin() + i);
-			break;
-		}
-	}
-}
-
-void Server::setPort(int newport)
-{
-	this->Port = newport;
-}
-
-void Server::setPassword(std::string password)
-{
-	this->_password = password;
-}
 
 bool Server::Signal = false;
 void Server::SignalHandler(int signum)
@@ -271,34 +139,6 @@ void Server::AcceptNewClient()
 	fds.push_back(NewPoll);
 
 	std::cout << GRE << "Client :" << incofd << " Connected" << WHI << std::endl;
-}
-
-void Server::SerSocket()
-{
-	int en = 1;
-	struct sockaddr_in add;
-	struct pollfd NewPoll;
-	add.sin_family = AF_INET;
-	add.sin_addr.s_addr = INADDR_ANY;
-	add.sin_port = htons(this->Port);
-
-	SerSocketFd = socket(AF_INET, SOCK_STREAM, 0);
-	if (SerSocketFd == -1)
-		throw(std::runtime_error("faild to create socket"));
-
-	if (setsockopt(SerSocketFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
-		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
-	if (fcntl(SerSocketFd, F_SETFL, O_NONBLOCK) == -1)
-		throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
-	if (bind(SerSocketFd, (struct sockaddr *)&add, sizeof(add)) == -1)
-		throw(std::runtime_error("faild to bind socket"));
-	if (listen(SerSocketFd, SOMAXCONN) == -1)
-		throw(std::runtime_error("listen() faild"));
-
-	NewPoll.fd = SerSocketFd;
-	NewPoll.events = POLLIN;
-	NewPoll.revents = 0;
-	fds.push_back(NewPoll);
 }
 
 void Server::ServerInit()

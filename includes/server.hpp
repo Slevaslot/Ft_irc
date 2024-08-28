@@ -39,22 +39,17 @@ public:
 	{
 		SerSocketFd = -1;
 	};
-	void ServerInit();
-	void SerSocket();
-	void AcceptNewClient();
-	void ReceiveNewData(int fd);
 	bool isClientByNickname(Channel channel, std::string nickname);
 	bool isOperatorByNickname(Channel channel, std::string nickname);
 	static void SignalHandler(int signum);
 	void CloseFds();
-	void ClearClients(int fd);
 	bool tryJoinChannel(std::string channelName, std::vector<Channel> &channels, Client &currentClient);
 	void sendWelcomeMessage(int fd, const std::string &nickname);
-	void auth(int fd, int currentClient);
 
 	/*----------Cmds----------*/
 
 	void user(std::string cmdArg, int currentClient);
+	void pass(std::string pass, std::string rightPass, Client &currentClient);
 	void nickCmd(std::vector<std::string> cmdSplited, int currentClient);
 	void parse_exec_cmd(std::string cmd, int fd);
 	void privMsg(std::vector<std::string> cmdSplited, std::string nickname);
@@ -95,6 +90,18 @@ public:
 	bool isInvite(Client client, Channel channel);
 	bool isClientByFd(int fd, Channel *channel);
 	void isNicknameValid(Client &client);
+	void auth(int fd, int currentClient);
+
+	/*----------Process---------*/
+
+	void SerSocket();
+	void ServerInit();
+	void AcceptNewClient();
+	void ReceiveNewData(int fd);
+
+	/*----------EndProcess------*/
+
+	void ClearClients(int fd);
 
 	/*----------Modes-----------*/
 
@@ -110,5 +117,7 @@ void redc(std::string msg);
 std::vector<std::string> splitLines(std::string str);
 std::vector<std::string> tokenizeCommand(std::string cmd);
 int findCmd(std::string cmdToFind);
+template <typename T>
+std::string toString(const T &value);
 
 #endif

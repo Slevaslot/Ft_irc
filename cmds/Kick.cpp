@@ -1,13 +1,5 @@
 #include "../includes/irc.hpp"
 
-template <typename T>
-std::string toString(const T &value)
-{
-	std::ostringstream oss;
-	oss << value;
-	return oss.str();
-}
-
 bool Server::isOperator(int fd, Channel *channel)
 {
 	std::vector<Client> operators = channel->GetOperators();

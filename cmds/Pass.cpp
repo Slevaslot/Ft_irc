@@ -1,6 +1,6 @@
 #include "../includes/irc.hpp"
 
-void pass(std::string pass, std::string rightPass, Client &currentClient)
+void Server::pass(std::string pass, std::string rightPass, Client &currentClient)
 {
 	if (pass == rightPass)
 	{

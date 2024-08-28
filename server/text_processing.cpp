@@ -27,6 +27,28 @@ std::vector<std::string> tokenizeCommand(std::string cmd)
 	return result;
 }
 
+template <typename T>
+std::string toString(const T &value)
+{
+	std::ostringstream oss;
+	oss << value;
+
+	return oss.str();
+}
+
+void print_command(std::vector<std::string> cmds)
+{
+	std::cout << YEL << "Command : " << cmds[0] << " {";
+	for (size_t i = 1; i < cmds.size(); i++)
+		std::cout << "Arg[" << i << "]: " << cmds[i] << " | ";
+	std::cout << "Size: " << cmds.size() << '}' << WHI << std::endl;
+}
+
+void send_msg(int fd, std::string msg)
+{
+	send(fd, msg.c_str(), msg.size(), 0);
+}
+
 int findCmd(std::string cmdToFind)
 {
 	std::string cmds[11] = {
