@@ -87,6 +87,11 @@ void Server::auth(int fd, int currentClient)
 
 void Server::nickCmd(std::vector<std::string> cmdSplited, int currentClient)
 {
+	if (cmdSplited.size() != 2)
+	{
+		std::cout << "Wrong number of arguments from client " << clients[currentClient].GetNickname() << std::endl;
+		return;
+	}
 	clients[currentClient].setNickname(cmdSplited[1]);
 	isNicknameValid(clients[currentClient]);
 	// auth(clients[currentClient].GetFd(), currentClient);

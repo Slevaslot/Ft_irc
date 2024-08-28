@@ -26,7 +26,7 @@ Client *Server::GetClientByNickname(std::string nickname)
 void Server::inviteChannel(int fd, std::string nickname, std::string channelName)
 {
 	Channel *channel = getChannel("#" + channelName);
-	if (channel == NULL || !isOperator(fd, channel) || !GetClientByNickname(nickname))
+	if (channel == NULL || !isOperator(fd, channel) || !GetClientByNickname(nickname) || _cmdSize != 3)
 		return;
 	std::cout << GRE << "client added" << WHI << std::endl;
 	channel->AddGuests(*GetClientByNickname(nickname));

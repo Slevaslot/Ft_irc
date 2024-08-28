@@ -13,53 +13,36 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	if (c == -1)
 		return;
 	std::cout << c << std::endl;
+	_cmdSize = cmdSplited.size();
 	switch (c)
 	{
 		/*-------Identify--------*/
 
 	case (PASS):
-		if (cmdSplited.size() == 2)
-			pass(cmdSplited[1], _password, clients[currentClient]);
-		break;
+		pass(cmdSplited[1], _password, clients[currentClient]); break;
 	case (USER):
-		user(cmdSplited[1], currentClient);
-		break;
+		user(cmdSplited[1], currentClient); break;
 	case (NICK):
-		if (cmdSplited.size() == 2)
-			nickCmd(cmdSplited, currentClient);
-		break;
+		nickCmd(cmdSplited, currentClient); break;
 
 		/*------Channels manage-----*/
 
 	case (JOIN):
-		join(cmdSplited, fd, clients[currentClient]);
-		break;
+		join(cmdSplited, fd, clients[currentClient]); break;
 	case (LIST):
-		if (cmdSplited.size() == 1)
-			listChannels(fd);
-		break;
+		listChannels(fd); break;
 	case (KICK):
-		kickChannel(fd, cmdSplited[2], cmdSplited[3]);
-		break;
+		kickChannel(fd, cmdSplited[2], cmdSplited[3]); break;
 	case (TOPIC):
-		if (cmdSplited.size() == 4)
-			topicChannel(fd, cmdSplited[2], cmdSplited[3]);
-		break;
+		topicChannel(fd, cmdSplited[2], cmdSplited[3]); break;
 	case (PART):
-		if (cmdSplited.size() == 3)
-			part(fd, cmdSplited[2], clients[currentClient].GetNickname());
-		break;
+		part(fd, cmdSplited[2], clients[currentClient].GetNickname()); break;
 	case (MODE):
-		if (cmdSplited.size() >= 3 && cmdSplited.size() <= 4)
-			modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
-		break;
+		modeChannel(fd, cmdSplited[1], &cmdSplited[2]); break;
 	case (INVITE):
-		if (cmdSplited.size() == 3)
-			inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
-		break;
+		inviteChannel(fd, cmdSplited[1], cmdSplited[2]); break;
 	case (PRIVMSG):
-		ping(cmdSplited, fd, clients[currentClient].GetNickname());
-		break;
+		ping(cmdSplited, fd, clients[currentClient].GetNickname()); break;
 	}
 };
 

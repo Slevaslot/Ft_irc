@@ -22,6 +22,12 @@ bool Server::isClientByFd(int fd, Channel *channel)
 
 void Server::topicChannel(int fd, std::string channelName, std::string topic)
 {
+	if (_cmdSize != 3)
+	{
+		std::string privMsg = ":t Wrong number of arguments\r\n";
+		send_msg(fd, privMsg);
+		return;
+	}
 	channelName[0] = '#';
 	Channel *channel = getChannel(channelName);
 	if (channel == NULL)

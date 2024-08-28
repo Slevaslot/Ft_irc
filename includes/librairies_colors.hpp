@@ -18,6 +18,18 @@
 #include <stdlib.h>
 #include <algorithm>
 
+#define PASS 0
+#define NICK 1
+#define USER 2
+#define PRIVMSG 3
+#define JOIN 4
+#define LIST 5
+#define KICK 6
+#define TOPIC 7
+#define PART 8
+#define MODE 9
+#define INVITE 10
+
 #define RED "\e[1;31m"
 #define WHI "\e[0;37m"
 #define GRE "\e[1;32m"

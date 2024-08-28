@@ -11,6 +11,12 @@ std::string toString(const T &value)
 void Server::listChannels(int fd)
 {
 	std::string privMsg;
+	if (_cmdSize != 1)
+	{
+		privMsg = ":t Wrong number of arguments\r\n";
+		send_msg(fd, privMsg);
+		return;
+	}
 	if (channels.size() < 1)
 	{
 		privMsg = ":t There is no channels left\r\n";

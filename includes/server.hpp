@@ -2,23 +2,11 @@
 #define SERVER_HPP
 
 #include "channel.hpp"
-#include <functional>
+
 class Client;
 class Channel;
 
 /*-------cmds define------*/
-
-#define PASS 0
-#define NICK 1
-#define USER 2
-#define PRIVMSG 3
-#define JOIN 4
-#define LIST 5
-#define KICK 6
-#define TOPIC 7
-#define PART 8
-#define MODE 9
-#define INVITE 10
 
 class Server
 {
@@ -33,6 +21,7 @@ private:
 	Client currentClient;
 	size_t _curr;
 	std::vector<Channel> channels;
+	int _cmdSize;
 
 public:
 	Server()

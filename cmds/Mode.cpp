@@ -75,6 +75,8 @@ void Server::modeK(Channel &channel, std::string mode, std::string key)
 
 void Server::modeChannel(int fd, std::string channelName, std::string *args)
 {
+	if (args->size() < 2 || args->size() > 3)
+		return;
 	Channel *channel = getChannel(channelName);
 	if (channel == NULL || !isOperator(fd, channel))
 		return;
