@@ -53,8 +53,16 @@ public:
 	Client *GetClientByNickname(std::string nickname);
 	int GetIndexClient(int fd);
 	int GetChannelIndex(std::string channelName);
+	std::vector<Channel>::iterator GetChannelIt(std::string channelName){
+		std::vector<Channel>::iterator i;
+		for(i = channels.begin(); i <= channels.end(); i++)
+			if (i->GetName() == channelName)
+				return (i);
+		return (channels.end());
+	};
 	Client GetClientByFd(int fd);
 	Channel *getChannel(std::string channelName);
+	Channel &getChannelRef(std::string channelName);
 	std::string getHostname() { return hostname; };
 
 	/*----------Channel----------*/

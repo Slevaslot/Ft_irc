@@ -3,6 +3,8 @@
 
 #include "server.hpp"
 #include <cstdlib>
+#include <cstdio>
+#include <unistd.h>
 
 void pass(std::string pass, std::string rightPass, Client &currentClient);
 void user(std::string newUsername, Client currClient);

@@ -62,9 +62,11 @@ void Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentCl
 			newChannel.AddOperator(currentClient);
 			channels.push_back(newChannel);
 		}
-
-		currentClient.SetFd(fd);
-		std::string joinMsg = ":" + currentClient.GetNickname() + "!" + currentClient.GetUsername() + "@localhost JOIN " + cmdSplited[1] + "\r\n";
-		send_msg(fd, joinMsg);
+		else
+		{
+			currentClient.SetFd(fd);
+			std::string joinMsg = ":" + currentClient.GetNickname() + "!" + currentClient.GetUsername() + "@localhost JOIN " + cmdSplited[1] + "\r\n";
+			send_msg(fd, joinMsg);
+		}
 	}
 }
