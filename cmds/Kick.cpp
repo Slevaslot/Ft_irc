@@ -27,7 +27,8 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 			std::cout << RED << "Kick " << nickname << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
 			send_msg(i->GetFd(), message);
-			channel->EraseClientByIt(i);
+			if (!clients.empty())
+				channel->EraseClientByIt(i);
 			break;
 		}
 	}
@@ -45,18 +46,20 @@ void Server::part(int fd, std::string channelName, std::string nickname)
 			continue;
 		if (it->GetNickname() == nickname)
 		{
-			if (channel->GetClients().size() <= 2)
+			if (channel->GetClients().size() == 1)
 			{
 				std::string message = "PART " + channelName + " :Bye!\r\n";
-				channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
-				channels.erase(GetChannelIt(channel->GetName()));
 				send_msg(fd, message);
+				channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
+				// if (clients.empty())
+				channels.erase(GetChannelIt(channel->GetName()));
 			}
 			else
 			{
 				std::string message = "PART " + channelName + " :Bye!\r\n";
 				send_msg(fd, message);
-				channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
+				if (!clients.empty())
+					channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
 			}
 			break;
 		}
