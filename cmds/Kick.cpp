@@ -17,18 +17,19 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 	Channel *channel = getChannel("#" + channelName);
 	if (channel == NULL || !isOperator(fd, channel))
 		return;
+	if (channel->GetClients().empty())
+		return ;
 	std::vector<Client> clients = channel->GetClients();
-	for (std::vector<Client>::iterator i = clients.begin(); i < clients.end(); i++)
+	for (std::vector<Client>::iterator it = clients.begin(); it < clients.end(); it++)
 	{
 		if (clients.size() == 0)
-			continue;
-		if (":" + i->GetNickname() == nickname)
+			return ;
+		if (":" + it->GetNickname() == nickname)
 		{
 			std::cout << RED << "Kick " << nickname << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
-			send_msg(i->GetFd(), message);
-			if (!clients.empty())
-				channel->EraseClientByIt(i);
+			send_msg(it->GetFd(), message);
+			channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
 			break;
 		}
 	}
@@ -46,22 +47,31 @@ void Server::part(int fd, std::string channelName, std::string nickname)
 			continue;
 		if (it->GetNickname() == nickname)
 		{
-			if (channel->GetClients().size() == 1)
+			if (channel->GetClients().size() <= 1)
+			{
+				std::string message = "PART " + channelName + " :Bye!\r\n";
+				send_msg(fd, message);
+				// channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
+				// if (clients.empty())
+				// if (clients.empty())
+				// {
+					int channelIndex = GetChannelIndex(channel->GetName());
+					if (channelIndex >= 0)
+					{
+						channels.erase(channels.begin() + channelIndex);
+					}
+				}
+				// channels.erase(GetChannelIt(channel->GetName()));
+
+			else if (!clients.empty())
 			{
 				std::string message = "PART " + channelName + " :Bye!\r\n";
 				send_msg(fd, message);
 				channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
-				// if (clients.empty())
-				channels.erase(GetChannelIt(channel->GetName()));
 			}
 			else
-			{
-				std::string message = "PART " + channelName + " :Bye!\r\n";
-				send_msg(fd, message);
-				if (!clients.empty())
-					channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
-			}
+				continue;
+		}
 			break;
 		}
-	}
 }
