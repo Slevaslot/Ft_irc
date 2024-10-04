@@ -41,7 +41,7 @@ public:
 	void pass(std::string pass, std::string rightPass, Client &currentClient);
 	void nickCmd(std::vector<std::string> cmdSplited, int currentClient);
 	void parse_exec_cmd(std::string cmd, int fd);
-	void privMsg(std::vector<std::string> cmdSplited, std::string nickname);
+	void privMsg(std::vector<std::string> cmdSplited, std::string nickname, int fd);
 	void Kick(int fd, std::string channelName, std::string clientName);
 	void ping(std::vector<std::string> cmdSplited, int fd, std::string nickname);
 	void join(std::vector<std::string> cmdSplited, int fd, Client &currentClient);

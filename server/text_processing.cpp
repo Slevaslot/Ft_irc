@@ -51,11 +51,12 @@ void send_msg(int fd, std::string msg)
 
 int findCmd(std::string cmdToFind)
 {
-	std::string cmds[11] = {
+	std::string cmds[12] = {
 		"PASS",
 		"NICK",
 		"USER",
 		"PRIVMSG",
+		"PING",
 		"JOIN",
 		"LIST",
 		"KICK",
@@ -65,7 +66,7 @@ int findCmd(std::string cmdToFind)
 		"INVITE",
 
 	};
-	for (int i = -1; i < 11; ++i)
+	for (int i = -1; i < 12; ++i)
 	{
 		if (cmds[i] == cmdToFind)
 		{

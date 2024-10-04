@@ -22,13 +22,14 @@
 #define NICK 1
 #define USER 2
 #define PRIVMSG 3
-#define JOIN 4
-#define LIST 5
-#define KICK 6
-#define TOPIC 7
-#define PART 8
-#define MODE 9
-#define INVITE 10
+#define PING 4
+#define JOIN 5
+#define LIST 6
+#define KICK 7
+#define TOPIC 8
+#define PART 9
+#define MODE 10
+#define INVITE 11
 
 #define RED "\e[1;31m"
 #define WHI "\e[0;37m"

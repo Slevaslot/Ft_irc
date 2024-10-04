@@ -43,6 +43,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		inviteChannel(fd, cmdSplited[1], cmdSplited[2]); break;
 	case (PRIVMSG):
 		ping(cmdSplited, fd, clients[currentClient].GetNickname()); break;
+	case (PING):
+		ping(cmdSplited, fd, clients[currentClient].GetNickname()); break;
 	}
 };
 
