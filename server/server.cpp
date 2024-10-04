@@ -46,6 +46,7 @@ Client Server::GetClientByFd(int fd)
 		if (it->GetFd() == fd)
 			return (*it);
 	}
+	std::cout << "ERRORRRRRRRR\n";
 	return (clients[clis.size()]);
 };
 
@@ -94,7 +95,6 @@ void Server::nickCmd(std::vector<std::string> cmdSplited, int currentClient)
 	}
 	clients[currentClient].setNickname(cmdSplited[1]);
 	isNicknameValid(clients[currentClient]);
-	// auth(clients[currentClient].GetFd(), currentClient);
 }
 
 void Server::user(std::string cmdArg, int currentClient)

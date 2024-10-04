@@ -4,15 +4,13 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 {
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
 	int currentClient = GetIndexClient(fd);
-	if (cmdSplited[0] == "CAP")
-		return;
+	Client thisClient = GetClientByFd(fd);
 	std::vector<std::string>::iterator it;
 	print_command(cmdSplited);
 	int c = -1;
 	c = findCmd(cmdSplited[0]);
 	if (c == -1)
 		return;
-	std::cout << c << std::endl;
 	_cmdSize = cmdSplited.size();
 	switch (c)
 	{
@@ -36,7 +34,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	case (TOPIC):
 		topicChannel(fd, cmdSplited[2], cmdSplited[3]); break;
 	case (PART):
-		part(fd, cmdSplited[2], clients[currentClient].GetNickname()); break;
+		if (cmdSplited.size() >= 3)	part(fd, cmdSplited[2], thisClient.GetNickname());
+		break;
 	case (MODE):
 		modeChannel(fd, cmdSplited[1], &cmdSplited[2]); break;
 	case (INVITE):
