@@ -15,6 +15,7 @@ bool Server::isOperator(int fd, Channel *channel)
 void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 {
 	Channel *channel = getChannel("#" + channelName);
+	Client kicker = GetClientByFd(fd);
 	if (channel == NULL || !isOperator(fd, channel))
 		return;
 	if (channel->GetClients().empty())
@@ -27,10 +28,13 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 		if (":" + it->GetNickname() == nickname)
 		{
 			std::cout << RED << "Kick " << nickname << WHI << std::endl;
-			std::string message = "PART " + channelName + " :Bye!\r\n";
+			std::string message = "PART " + channelName + " :Kicked!\r\n";
+			std::string reason = "hh";
+			std::string kick = ":" + kicker.GetNickname() + "!~" + kicker.GetUsername() + "@localhost KICK " + channelName + " " + it->GetNickname() + " " + reason + "\r\n";
 			send_msg(it->GetFd(), message);
+			channels[GetChannelIndex(channel->GetName())].sendMsgAllClientsEx(kick, it->GetFd());
 			channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
-			break;
+			return ;
 		}
 	}
 }
@@ -51,18 +55,12 @@ void Server::part(int fd, std::string channelName, std::string nickname)
 			{
 				std::string message = "PART " + channelName + " :Bye!\r\n";
 				send_msg(fd, message);
-				// channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
-				// if (clients.empty())
-				// if (clients.empty())
-				// {
 					int channelIndex = GetChannelIndex(channel->GetName());
 					if (channelIndex >= 0)
 					{
 						channels.erase(channels.begin() + channelIndex);
 					}
-				}
-				// channels.erase(GetChannelIt(channel->GetName()));
-
+			}
 			else if (!clients.empty())
 			{
 				std::string message = "PART " + channelName + " :Bye!\r\n";
