@@ -25,15 +25,15 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 	{
 		if (clients.size() == 0)
 			return ;
-		if (":" + it->GetNickname() == nickname)
+		if (":" + it->GetNickname() == nickname && !clients.empty())
 		{
-			std::cout << RED << "Kick " << nickname << WHI << std::endl;
+			std::cout << RED << "Kick " << it->GetNickname() << WHI << std::endl;
 			std::string message = ":" + nickname + " PART " + channelName + " :Bye!\r\n";
+			send_msg(it->GetFd(), message);
+			channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
 			std::string reason = "hh";
 			std::string kick = ":" + kicker.GetNickname() + "!~" + kicker.GetUsername() + "@localhost KICK " + channelName + " " + it->GetNickname() + " " + reason + "\r\n";
-			send_msg(it->GetFd(), message);
-			channels[GetChannelIndex(channel->GetName())].sendMsgAllClientsEx(kick, it->GetFd());
-			channels[GetChannelIndex(channel->GetName())].EraseClientByIt(it);
+			// channels[GetChannelIndex(channel->GetName())].sendMsgAllClientsEx(kick, it->GetFd());
 			return ;
 		}
 	}

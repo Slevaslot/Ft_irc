@@ -2,7 +2,7 @@
 #define LIBRAIRIES_COLORS_HPP
 
 #include <iostream>
-#include <string.h>
+#include <cstring>
 #include <vector>
 #include <sys/socket.h>
 #include <sys/types.h>
