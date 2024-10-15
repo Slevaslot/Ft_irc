@@ -28,7 +28,7 @@ public:
 	Client GetClient(std::string clientName);
 	std::string GetKey() { return _key; };
 	std::vector<Client>::iterator GetThisClient(Client cli);
-	std::vector<Client> GetClients() { return _clients; };
+	std::vector<Client> &GetClients() { return _clients; };
 	std::vector<Client> GetOperators() { return _operators; };
 	std::vector<Client> GetGuests() { return _guests; };
 	void EraseClientByIt(std::vector<Client>::iterator it) { _clients.erase(it); };

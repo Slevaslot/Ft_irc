@@ -34,7 +34,13 @@ void Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickn
 {
 	if (getChannel(cmdSplited[1]))
 	{
-		getChannel(cmdSplited[1])->sendMsgAllClientsEx(cmdSplited[2], fd);
+		std::vector<Client> thisClients = getChannel(cmdSplited[1])->GetClients();
+		for(std::vector<Client>::iterator it = thisClients.begin(); it < thisClients.end(); it++)
+		{
+			if (it->GetFd() == fd)
+				getChannel(cmdSplited[1])->sendMsgAllClientsEx(cmdSplited[2], fd);
+
+		}
 	}
 	//  && (cmdSplited.size() == 5 || cmdSplited.size() == 2)
 	else if (cmdSplited[0] == "PING")
