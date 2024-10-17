@@ -64,6 +64,8 @@ void send_msg(int fd, std::string msg)
 
 int findCmd(std::string cmdToFind)
 {
+	// if (cmdToFind.empty())
+	// 	return (-1);
 	if (cmdToFind.size() <= 3)
 		return (-1);
 	std::string cmds[12] = {
@@ -79,11 +81,10 @@ int findCmd(std::string cmdToFind)
 		"PART",
 		"MODE",
 		"INVITE",
-
 	};
-	for (int i = -1; i < 12; ++i)
+	for (int i = 0; i < 12; ++i)
 	{
-		if (cmds[i] == cmdToFind)
+		if (!cmds[i].empty() && cmds[i] == cmdToFind)
 		{
 			return (i);
 		}

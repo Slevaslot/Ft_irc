@@ -10,6 +10,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	std::vector<std::string>::iterator it;
 	print_command(cmdSplited);
 	int c = -1;
+	if (cmdSplited[0].empty())
+		return;
 	c = findCmd(cmdSplited[0]);
 	if (c == -1)
 		return;
@@ -22,7 +24,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		pass(cmdSplited[1], _password, clients[currentClient]);
 		break;
 	case (USER):
-		user(cmdSplited[1], currentClient);
+		if (cmdSplited.size() > 2)
+			user(cmdSplited[1], currentClient);
 		break;
 	case (NICK):
 		nickCmd(cmdSplited, currentClient);
@@ -37,7 +40,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		listChannels(fd);
 		break;
 	case (KICK):
-		kickChannel(fd, cmdSplited[2], cmdSplited[3]);
+		if (cmdSplited.size() > 3)
+			kickChannel(fd, cmdSplited[2], cmdSplited[3]);
 		break;
 	case (TOPIC):
 		topicChannel(fd, cmdSplited[2], cmdSplited[3]);
