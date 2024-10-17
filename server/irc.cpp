@@ -2,9 +2,11 @@
 
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
-	std::vector<std::string> cmdSplited = tokenizeCommand(cmd);
 	int currentClient = GetIndexClient(fd);
 	Client thisClient = GetClientByFd(fd);
+	std::vector<std::string> cmdSplited = tokenizeCommand(cmd, *this, fd);
+	if (GetClicli(fd) == true)
+		return;
 	std::vector<std::string>::iterator it;
 	print_command(cmdSplited);
 	int c = -1;
@@ -17,33 +19,45 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		/*-------Identify--------*/
 
 	case (PASS):
-		pass(cmdSplited[1], _password, clients[currentClient]); break;
+		pass(cmdSplited[1], _password, clients[currentClient]);
+		break;
 	case (USER):
-		user(cmdSplited[1], currentClient); break;
+		user(cmdSplited[1], currentClient);
+		break;
 	case (NICK):
-		nickCmd(cmdSplited, currentClient); break;
+		nickCmd(cmdSplited, currentClient);
+		break;
 
 		/*------Channels manage-----*/
 
 	case (JOIN):
-		join(cmdSplited, fd, clients[currentClient]); break;
+		join(cmdSplited, fd, clients[currentClient]);
+		break;
 	case (LIST):
-		listChannels(fd); break;
+		listChannels(fd);
+		break;
 	case (KICK):
-		kickChannel(fd, cmdSplited[2], cmdSplited[3]); break;
+		kickChannel(fd, cmdSplited[2], cmdSplited[3]);
+		break;
 	case (TOPIC):
-		topicChannel(fd, cmdSplited[2], cmdSplited[3]); break;
+		topicChannel(fd, cmdSplited[2], cmdSplited[3]);
+		break;
 	case (PART):
-		if (cmdSplited.size() >= 3)	part(fd, cmdSplited[2], thisClient.GetNickname());
+		if (cmdSplited.size() >= 3)
+			part(fd, cmdSplited[2], thisClient.GetNickname());
 		break;
 	case (MODE):
-		modeChannel(fd, cmdSplited[1], &cmdSplited[2]); break;
+		modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
+		break;
 	case (INVITE):
-		inviteChannel(fd, cmdSplited[1], cmdSplited[2]); break;
+		inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
+		break;
 	case (PRIVMSG):
-		ping(cmdSplited, fd, clients[currentClient].GetNickname()); break;
+		ping(cmdSplited, fd, clients[currentClient].GetNickname());
+		break;
 	case (PING):
-		ping(cmdSplited, fd, clients[currentClient].GetNickname()); break;
+		ping(cmdSplited, fd, clients[currentClient].GetNickname());
+		break;
 	}
 };
 
@@ -87,6 +101,9 @@ void Server::ReceiveNewData(int fd)
 	else
 	{
 		buff[bytes] = '\0';
+		setClicli(fd, false);
+		if (isCtrlD(buff))
+			setClicli(fd, true);
 		cmd = splitLines(buff);
 		for (size_t i = 0; i < cmd.size(); i++)
 			parse_exec_cmd(cmd[i], fd);

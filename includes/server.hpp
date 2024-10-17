@@ -22,6 +22,7 @@ private:
 	size_t _curr;
 	std::vector<Channel> channels;
 	int _cmdSize;
+	bool clicli[2048];
 
 public:
 	Server()
@@ -49,13 +50,15 @@ public:
 
 	/*----------Getters----------*/
 
+	bool GetClicli(int fd) { return clicli[fd]; };
 	std::vector<Client> GetClients() { return clients; };
 	Client *GetClientByNickname(std::string nickname);
 	int GetIndexClient(int fd);
 	int GetChannelIndex(std::string channelName);
-	std::vector<Channel>::iterator GetChannelIt(std::string channelName){
+	std::vector<Channel>::iterator GetChannelIt(std::string channelName)
+	{
 		std::vector<Channel>::iterator i;
-		for(i = channels.begin(); i <= channels.end(); i++)
+		for (i = channels.begin(); i <= channels.end(); i++)
 			if (i->GetName() == channelName)
 				return (i);
 		return (channels.end());
@@ -74,6 +77,7 @@ public:
 
 	/*----------Setters----------*/
 
+	void setClicli(int fd, bool d) { clicli[fd] = d; };
 	void setHostname(std::string host) { hostname = host; };
 	void setServer(Server &ser, char **av);
 	void setPort(int newport);
@@ -112,9 +116,10 @@ public:
 void send_msg(int fd, std::string msg);
 void redc(std::string msg);
 std::vector<std::string> splitLines(std::string str);
-std::vector<std::string> tokenizeCommand(std::string cmd);
+std::vector<std::string> tokenizeCommand(std::string cmd, Server serv, int fd);
 int findCmd(std::string cmdToFind);
 template <typename T>
 std::string toString(const T &value);
+int isCtrlD(std::string str);
 
 #endif

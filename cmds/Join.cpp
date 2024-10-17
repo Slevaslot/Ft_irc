@@ -3,18 +3,8 @@
 
 bool Server::tryJoinChannel(std::string channelName, std::vector<Channel> &channels, Client &currentClient)
 {
-	// Channel *channel = getChannel(channelName);
-
- //|| channel->getState('i') == ON
 	if (channels.size() == 0)
 		return false;
-
-	// if (channel->getState('i') == ON && !isInvite(currentClient, *channel))
-	// {
-	// 	std::cout << "You are not invited to this channel" << std::endl;
-	// 	return false;
-	// }
-
 	for (size_t i = 0; i < channels.size(); i++)
 	{
 		if (channels[i].GetName() == channelName)

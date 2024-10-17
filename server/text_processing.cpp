@@ -1,5 +1,7 @@
 #include "../includes/irc.hpp"
 
+std::string globalCommand[2048];
+
 std::vector<std::string> splitLines(std::string str)
 {
 	std::vector<std::string> result;
@@ -16,14 +18,25 @@ std::vector<std::string> splitLines(std::string str)
 	return result;
 }
 
-std::vector<std::string> tokenizeCommand(std::string cmd)
+int isCtrlD(std::string str)
+{
+	if (str.find("\n") == std::string::npos)
+		return (1);
+	return (0);
+}
+
+std::vector<std::string> tokenizeCommand(std::string cmd, Server serv, int fd)
 {
 	std::vector<std::string> result;
-	std::stringstream ss(cmd);
+	globalCommand[fd] += cmd;
+	if (serv.GetClicli(fd) == true)
+		cmd = globalCommand[fd];
+	std::stringstream ss(globalCommand[fd]);
 	std::string token;
-
 	while (ss >> token)
 		result.push_back(token);
+	if (serv.GetClicli(fd) == false)
+		globalCommand[fd] = "";
 	return result;
 }
 
@@ -51,6 +64,8 @@ void send_msg(int fd, std::string msg)
 
 int findCmd(std::string cmdToFind)
 {
+	if (cmdToFind.size() <= 3)
+		return (-1);
 	std::string cmds[12] = {
 		"PASS",
 		"NICK",

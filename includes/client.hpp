@@ -14,10 +14,16 @@ private:
 	std::string Nick;
 	std::string User;
 	std::string password;
+	bool ctrld;
 
 public:
+	std::string command;
 	Client() {};
 	int GetFd() { return Fd; }
+	void setCommand(std::string cmd) { command = cmd; };
+	void setCtrlD(bool d) { ctrld = d; };
+	bool getCtrlD() { return (ctrld); };
+	std::string getCommand() { return command; };
 	std::string GetNickname() { return Nick; };
 	std::string GetUsername() { return User; };
 	std::string GetPassword() { return password; };

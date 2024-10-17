@@ -99,7 +99,6 @@ void Server::nickCmd(std::vector<std::string> cmdSplited, int currentClient)
 
 void Server::user(std::string cmdArg, int currentClient)
 {
-	redc("here");
 	std::string username = cmdArg;
 	clients[currentClient].setUsername(cmdArg);
 	auth(clients[currentClient].GetFd(), currentClient);
