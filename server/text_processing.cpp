@@ -64,8 +64,6 @@ void send_msg(int fd, std::string msg)
 
 int findCmd(std::string cmdToFind)
 {
-	// if (cmdToFind.empty())
-	// 	return (-1);
 	if (cmdToFind.size() <= 3)
 		return (-1);
 	std::string cmds[12] = {
