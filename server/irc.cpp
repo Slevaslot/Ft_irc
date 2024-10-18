@@ -9,9 +9,9 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		return;
 	if (cmdSplited[0].empty())
 		return;
-	print_command(cmdSplited);
 	if (setupCmdTrack(cmdSplited[0]) == -1)
 		return;
+	print_command(cmdSplited);
 	_cmdSize = cmdSplited.size();
 	switch (_c)
 	{
