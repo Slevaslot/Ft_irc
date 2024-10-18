@@ -2,6 +2,14 @@
 
 std::string globalCommand[2048];
 
+int Server::setupCmdTrack(std::string cmd)
+{
+	_c = -1;
+	_c = findCmd(cmd);
+	if (_c == -1)
+		return (_c);
+	return (0);
+}
 std::vector<std::string> splitLines(std::string str)
 {
 	std::vector<std::string> result;

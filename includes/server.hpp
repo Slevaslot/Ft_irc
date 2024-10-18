@@ -21,6 +21,7 @@ private:
 	std::vector<Channel> channels;
 	int _cmdSize;
 	bool clicli[2048];
+	int _c;
 
 public:
 	Server()
@@ -81,6 +82,7 @@ public:
 	void setPort(int newport);
 	void setCurr(size_t c) { _curr = c; };
 	void setPassword(std::string password);
+	int setupCmdTrack(std::string cmd);
 
 	/*----------Operations-------*/
 

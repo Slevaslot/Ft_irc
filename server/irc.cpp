@@ -7,15 +7,13 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd, *this, fd);
 	if (GetClicli(fd) == true)
 		return;
-	print_command(cmdSplited);
-	int c = -1;
 	if (cmdSplited[0].empty())
 		return;
-	c = findCmd(cmdSplited[0]);
-	if (c == -1)
+	print_command(cmdSplited);
+	if (setupCmdTrack(cmdSplited[0]) == -1)
 		return;
 	_cmdSize = cmdSplited.size();
-	switch (c)
+	switch (_c)
 	{
 		/*------- Authentify --------*/
 
