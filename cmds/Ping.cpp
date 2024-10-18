@@ -7,7 +7,6 @@ Channel *Server::getChannel(std::string channelName)
 		if (channels[i].GetName() == channelName)
 			return &channels[i];
 	}
-	// std::cout << "GET CHANNEL PASS " << channelName << std::endl;
 	return NULL;
 }
 
@@ -18,7 +17,6 @@ void Server::privMsg(std::vector<std::string> cmdSplited, std::string nickname, 
 	std::string pong = ":t Private message " + cmdSplited[2] + "\r\n";
 	for (it = clients.begin(); it < clients.end(); it++)
 	{
-		// std::cout << it->GetNickname();
 		if (it->GetNickname() == cmdSplited[1])
 		{
 			std::cout << "Match nickname!\n";
@@ -42,7 +40,6 @@ void Server::ping(std::vector<std::string> cmdSplited, int fd, std::string nickn
 
 		}
 	}
-	//  && (cmdSplited.size() == 5 || cmdSplited.size() == 2)
 	else if (cmdSplited[0] == "PING")
 	{
 		std::string pong = nickname + " PONG " + cmdSplited[1] + "\r\n";

@@ -30,7 +30,6 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 		{
 			std::cout << RED << "Kick " << it->GetNickname() << WHI << std::endl;
 			std::string message = "PART " + channelName + " :Bye!\r\n";
-			// std::string message = ":" + nickname + " PART " + channelName + " :Bye!\r\n";
 			send_msg(it->GetFd(), message);
 			channel->GetClients().erase(it);
 			return;

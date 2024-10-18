@@ -6,8 +6,6 @@
 class Client;
 class Channel;
 
-/*-------cmds define------*/
-
 class Server
 {
 private:

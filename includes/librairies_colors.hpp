@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <algorithm>
 
+/*----- cmds define ----*/
+
 #define PASS 0
 #define NICK 1
 #define USER 2
@@ -30,6 +32,8 @@
 #define PART 9
 #define MODE 10
 #define INVITE 11
+
+/*------- Colors ------*/
 
 #define RED "\e[1;31m"
 #define WHI "\e[0;37m"

@@ -7,7 +7,6 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd, *this, fd);
 	if (GetClicli(fd) == true)
 		return;
-	std::vector<std::string>::iterator it;
 	print_command(cmdSplited);
 	int c = -1;
 	if (cmdSplited[0].empty())
@@ -18,21 +17,22 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	_cmdSize = cmdSplited.size();
 	switch (c)
 	{
-		/*-------Identify--------*/
+		/*------- Authentify --------*/
 
 	case (PASS):
 		if (_cmdSize == 2)
 			pass(cmdSplited[1], _password, clients[currentClient]);
 		break;
 	case (USER):
-		if (cmdSplited.size() > 2)
+		if (_cmdSize > 2)
 			user(cmdSplited[1], currentClient);
 		break;
 	case (NICK):
-		nickCmd(cmdSplited, currentClient);
+		if (_cmdSize > 1)
+			nickCmd(cmdSplited, currentClient);
 		break;
 
-		/*------Channels manage-----*/
+		/*------ Channels manage -----*/
 
 	case (JOIN):
 		join(cmdSplited, fd, clients[currentClient]);
@@ -41,14 +41,15 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		listChannels(fd);
 		break;
 	case (KICK):
-		if (cmdSplited.size() > 3)
+		if (_cmdSize > 3)
 			kickChannel(fd, cmdSplited[2], cmdSplited[3]);
 		break;
 	case (TOPIC):
-		topicChannel(fd, cmdSplited[2], cmdSplited[3]);
+		if (_cmdSize >= 3)
+			topicChannel(fd, cmdSplited[2], cmdSplited[3]);
 		break;
 	case (PART):
-		if (cmdSplited.size() >= 3)
+		if (_cmdSize >= 3)
 			part(fd, cmdSplited[2], thisClient.GetNickname());
 		break;
 	case (MODE):
@@ -57,8 +58,11 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	case (INVITE):
 		inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
 		break;
+
+		/*--------- Messages --------*/
+
 	case (PRIVMSG):
-		if (cmdSplited.size() >= 3)
+		if (_cmdSize >= 3)
 			ping(cmdSplited, fd, clients[currentClient].GetNickname());
 		break;
 	case (PING):
