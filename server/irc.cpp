@@ -5,7 +5,7 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	int currentClient = GetIndexClient(fd);
 	Client thisClient = GetClientByFd(fd);
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd, *this, fd);
-	if (GetClicli(fd) == true)
+	if (GetCliCtrlD(fd) == true)
 		return;
 	if (cmdSplited[0].empty())
 		return;

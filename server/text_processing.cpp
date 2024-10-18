@@ -37,13 +37,13 @@ std::vector<std::string> tokenizeCommand(std::string cmd, Server serv, int fd)
 {
 	std::vector<std::string> result;
 	globalCommand[fd] += cmd;
-	if (serv.GetClicli(fd) == true)
+	if (serv.GetCliCtrlD(fd) == true)
 		cmd = globalCommand[fd];
 	std::stringstream ss(globalCommand[fd]);
 	std::string token;
 	while (ss >> token)
 		result.push_back(token);
-	if (serv.GetClicli(fd) == false)
+	if (serv.GetCliCtrlD(fd) == false)
 		globalCommand[fd] = "";
 	return result;
 }

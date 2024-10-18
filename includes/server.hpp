@@ -49,7 +49,7 @@ public:
 
 	/*----------Getters----------*/
 
-	bool GetClicli(int fd) { return clicli[fd]; };
+	bool GetCliCtrlD(int fd) { return clicli[fd]; };
 	std::vector<Client> GetClients() { return clients; };
 	Client *GetClientByNickname(std::string nickname);
 	int GetIndexClient(int fd);
