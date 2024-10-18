@@ -21,7 +21,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		/*-------Identify--------*/
 
 	case (PASS):
-		pass(cmdSplited[1], _password, clients[currentClient]);
+		if (_cmdSize == 2)
+			pass(cmdSplited[1], _password, clients[currentClient]);
 		break;
 	case (USER):
 		if (cmdSplited.size() > 2)
@@ -57,7 +58,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
 		break;
 	case (PRIVMSG):
-		ping(cmdSplited, fd, clients[currentClient].GetNickname());
+		if (cmdSplited.size() >= 3)
+			ping(cmdSplited, fd, clients[currentClient].GetNickname());
 		break;
 	case (PING):
 		ping(cmdSplited, fd, clients[currentClient].GetNickname());
