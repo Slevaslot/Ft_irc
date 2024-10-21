@@ -19,6 +19,7 @@ private:
 	Client currentClient;
 	size_t _curr;
 	std::vector<Channel> channels;
+	int _currentClient;
 	int _cmdSize;
 	bool clicli[2048];
 	int _c;
@@ -46,6 +47,7 @@ public:
 	void ping(std::vector<std::string> cmdSplited, int fd, std::string nickname);
 	void join(std::vector<std::string> cmdSplited, int fd, Client &currentClient);
 	void part(int fd, std::string channelName, std::string nickname);
+	void killProcess(int fd, std::string nickname);
 
 	/*----------Getters----------*/
 

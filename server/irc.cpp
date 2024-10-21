@@ -1,8 +1,19 @@
 #include "../includes/irc.hpp"
 
+void Server::killProcess(int fd, std::string nickname)
+{
+	(void)fd;
+	Client *cli = GetClientByNickname(nickname);
+	if (cli == NULL)
+		return;
+	std::string message = "KILL " + nickname + " :Bye!\r\n";
+	send_msg(cli->GetFd(), message);
+	close(cli->GetFd());
+}
+
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
-	int currentClient = GetIndexClient(fd);
+	_currentClient = GetIndexClient(fd);
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd, *this, fd);
 	if (GetCliCtrlD(fd) == true)
 		return;
@@ -18,21 +29,25 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 
 	case (PASS):
 		if (_cmdSize == 2)
-			pass(cmdSplited[1], _password, clients[currentClient]);
+			pass(cmdSplited[1], _password, clients[_currentClient]);
 		break;
 	case (USER):
 		if (_cmdSize > 2)
-			user(cmdSplited[1], currentClient);
+			user(cmdSplited[1], _currentClient);
 		break;
 	case (NICK):
 		if (_cmdSize > 1)
-			nickCmd(cmdSplited, currentClient);
+			nickCmd(cmdSplited, _currentClient);
+		break;
+	case (KILL):
+		if (_cmdSize > 1)
+			killProcess(fd, cmdSplited[1]);
 		break;
 
 		/*------ Channels manage -----*/
 
 	case (JOIN):
-		join(cmdSplited, fd, clients[currentClient]);
+		join(cmdSplited, fd, clients[_currentClient]);
 		break;
 	case (LIST):
 		listChannels(fd);
@@ -47,7 +62,7 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		break;
 	case (PART):
 		if (_cmdSize >= 3)
-			part(fd, cmdSplited[2], clients[currentClient].GetNickname());
+			part(fd, cmdSplited[2], clients[_currentClient].GetNickname());
 		break;
 	case (MODE):
 		if (_cmdSize > 2)
@@ -62,11 +77,11 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 
 	case (PRIVMSG):
 		if (_cmdSize >= 3)
-			ping(cmdSplited, fd, clients[currentClient].GetNickname());
+			ping(cmdSplited, fd, clients[_currentClient].GetNickname());
 		break;
 	case (PING):
 		if (_cmdSize > 2)
-			ping(cmdSplited, fd, clients[currentClient].GetNickname());
+			ping(cmdSplited, fd, clients[_currentClient].GetNickname());
 		break;
 	}
 };
