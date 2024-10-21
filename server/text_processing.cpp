@@ -91,7 +91,6 @@ int findCmd(std::string cmdToFind)
 	};
 	for (int i = 0; i < 13; ++i)
 	{
-		std::cout << cmdToFind << " == " << cmds[i] << std::endl;
 		if (!cmds[i].empty() && cmds[i] == cmdToFind)
 		{
 			return (i);
