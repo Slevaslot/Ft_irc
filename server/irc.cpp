@@ -3,7 +3,6 @@
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
 	int currentClient = GetIndexClient(fd);
-	Client thisClient = GetClientByFd(fd);
 	std::vector<std::string> cmdSplited = tokenizeCommand(cmd, *this, fd);
 	if (GetCliCtrlD(fd) == true)
 		return;
@@ -48,13 +47,15 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		break;
 	case (PART):
 		if (_cmdSize >= 3)
-			part(fd, cmdSplited[2], thisClient.GetNickname());
+			part(fd, cmdSplited[2], clients[currentClient].GetNickname());
 		break;
 	case (MODE):
-		modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
+		if (_cmdSize > 2)
+			modeChannel(fd, cmdSplited[1], &cmdSplited[2]);
 		break;
 	case (INVITE):
-		inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
+		if (_cmdSize > 2)
+			inviteChannel(fd, cmdSplited[1], cmdSplited[2]);
 		break;
 
 		/*--------- Messages --------*/
@@ -64,7 +65,8 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 			ping(cmdSplited, fd, clients[currentClient].GetNickname());
 		break;
 	case (PING):
-		ping(cmdSplited, fd, clients[currentClient].GetNickname());
+		if (_cmdSize > 2)
+			ping(cmdSplited, fd, clients[currentClient].GetNickname());
 		break;
 	}
 };
