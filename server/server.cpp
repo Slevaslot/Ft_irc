@@ -81,11 +81,17 @@ void Server::isNicknameValid(Client &client)
 
 void Server::auth(int fd, int currentClient)
 {
-	std::cout << clients[currentClient].GetNickname() << " is trying to connect" << std::endl;
+	std::cout << GRE << clients[currentClient].GetNickname() << WHI
+			  << " is connecting ..." << std::endl;
+	sleep(1);
 	if (clients[currentClient].GetPassword() == _password && clients[currentClient].GetNickname() != "\0")
+	{
+		std::cout << GRE << "Connected " << "✅" << WHI << std::endl;
 		sendWelcomeMessage(fd, clients[currentClient].GetNickname());
+	}
+	else
+		std::cout << "❌" << std::endl;
 }
-
 void Server::nickCmd(std::vector<std::string> cmdSplited, int currentClient)
 {
 	if (cmdSplited.size() != 2)

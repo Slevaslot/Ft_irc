@@ -1,16 +1,5 @@
 #include "../includes/irc.hpp"
 
-void Server::killProcess(int fd, std::string nickname)
-{
-	(void)fd;
-	Client *cli = GetClientByNickname(nickname);
-	if (cli == NULL)
-		return;
-	std::string message = clients[_currentClient].GetNickname() + " KILL " + nickname + " :Bye!\r\n";
-	send_msg(cli->GetFd(), message);
-	close(cli->GetFd());
-}
-
 void Server::parse_exec_cmd(std::string cmd, int fd)
 {
 	_currentClient = GetIndexClient(fd);
@@ -28,9 +17,9 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		/*------- Authentify --------*/
 
 	case (PASS):
-		if (_cmdSize == 2)
+		if (_cmdSize >= 2)
 			pass(cmdSplited[1], _password, clients[_currentClient]);
-		break; 
+		break;
 	case (USER):
 		if (_cmdSize > 2)
 			user(cmdSplited[1], _currentClient);
