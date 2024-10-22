@@ -39,11 +39,21 @@ void Server::join(std::vector<std::string> cmdSplited, int fd, Client &currentCl
 			send_msg(fd, kickmsg);
 			return;
 		}
+		if (channel && channel->getMaxUsers() != 0)
+		{
+			if (channel->GetClients().size() >= channel->getMaxUsers())
+			{
+				std::string kickmsg = ":" + hostname + " 471 " + currentClient.GetNickname() + " " + channel->GetName() + " :Cannot join channel (+l)\r\n";
+				send_msg(fd, kickmsg);
+				return;
+			}
+		}
 		if (!tryJoinChannel(cmdSplited[1], channels, currentClient))
 		{
 			Channel newChannel(cmdSplited[1]);
 			newChannel.AddClient(currentClient);
 			newChannel.AddOperator(currentClient);
+			newChannel.setMaxUsers(0);
 			channels.push_back(newChannel);
 			currentClient.SetFd(fd);
 			std::string joinMsg = ":" + currentClient.GetNickname() + "!" + currentClient.GetUsername() + "@localhost JOIN " + cmdSplited[1] + "\r\n";

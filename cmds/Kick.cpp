@@ -66,7 +66,7 @@ void Server::part(int fd, std::string channelName, std::string nickname)
 			}
 			else
 			{
-				it = channel->GetClients().erase(it);
+				channel->GetClients().erase(it);
 				return;
 			}
 		}

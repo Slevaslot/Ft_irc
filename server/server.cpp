@@ -91,7 +91,8 @@ void Server::auth(int fd, int currentClient)
 				  << std::endl;
 		std::cout << "Username : " << clients[currentClient].GetUsername() << std::endl;
 		std::cout << "Nickname : " << clients[currentClient].GetNickname() << std::endl;
-		std::cout << "_______________" << std::endl;
+		std::cout << "_______________\n"
+				  << std::endl;
 		sendWelcomeMessage(fd, clients[currentClient].GetNickname());
 	}
 	else

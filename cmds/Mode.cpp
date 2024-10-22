@@ -73,6 +73,18 @@ void Server::modeK(Channel &channel, std::string mode, std::string key)
 	channel.setKey(key);
 }
 
+void Server::modeL(Channel &channel, std::string mode, std::string nb)
+{
+	unsigned long max;
+	std::istringstream iss(nb);
+	if (!(iss >> max))
+		return;
+	if (mode == "+l")
+		channel.setMaxUsers(max);
+	else
+		channel.setMaxUsers(0);
+}
+
 void Server::modeChannel(int fd, std::string channelName, std::string *args)
 {
 	if (args->size() < 2 || args->size() > 3)
@@ -88,6 +100,6 @@ void Server::modeChannel(int fd, std::string channelName, std::string *args)
 		modeK(*channel, args[0], args[1]);
 	else if (args[0] == "+o" || args[0] == "-o")
 		modeO(*channel, args[0], args[1]);
-	else if (args[0] == "+l")
-		channel->setState(ON, 3);
+	else if (args[0] == "+l" || args[0] == "-l")
+		modeL(*channel, args[0], args[1]);
 }

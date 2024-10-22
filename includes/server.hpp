@@ -113,6 +113,7 @@ public:
 	void modeI(Channel &channel, std::string mode);
 	void modeT(Channel &channel, std::string mode);
 	void modeO(Channel &channel, std::string nickname, std::string mode);
+	void modeL(Channel &channel, std::string mode, std::string nb);
 };
 
 void send_msg(int fd, std::string msg);

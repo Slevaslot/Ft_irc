@@ -21,9 +21,12 @@ private:
 	std::vector<Client> _guests;
 	std::string _key;
 	State _state[5];
+	unsigned long _maxUsers;
 
 public:
 	Channel(std::string name);
+	void setMaxUsers(unsigned long max) { _maxUsers = max; };
+	unsigned long getMaxUsers() { return (_maxUsers); };
 	void setTopic(std::string topic) { _topic = topic; };
 	Client GetClient(std::string clientName);
 	std::string GetKey() { return _key; };
