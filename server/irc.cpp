@@ -19,9 +19,9 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		return;
 	if (cmdSplited[0].empty())
 		return;
+	print_command(cmdSplited);
 	if (setupCmdTrack(cmdSplited[0]) == -1)
 		return;
-	print_command(cmdSplited);
 	_cmdSize = cmdSplited.size();
 	switch (_c)
 	{
@@ -30,7 +30,7 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 	case (PASS):
 		if (_cmdSize == 2)
 			pass(cmdSplited[1], _password, clients[_currentClient]);
-		break;
+		break; 
 	case (USER):
 		if (_cmdSize > 2)
 			user(cmdSplited[1], _currentClient);

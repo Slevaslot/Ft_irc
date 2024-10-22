@@ -25,11 +25,10 @@ void Server::kickChannel(int fd, std::string channelName, std::string nickname)
 
 	for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
-		std::cout << RED << "Nickname: " << it->GetNickname() << WHI << std::endl;
 		if (":" + it->GetNickname() == nickname)
 		{
 			std::cout << RED << "Kick " << it->GetNickname() << WHI << std::endl;
-			std::string message = "PART " + channelName + " :Bye!\r\n";
+			std::string message = nickname + " PART " + channelName + " :Kicked!\r\n";
 			send_msg(it->GetFd(), message);
 			channel->GetClients().erase(it);
 			return;

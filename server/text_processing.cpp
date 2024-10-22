@@ -96,5 +96,5 @@ int findCmd(std::string cmdToFind)
 			return (i);
 		}
 	}
-	return (std::cout << RED << "Command not found!" << WHI << std::endl, -1);
+	return (-1);
 }
