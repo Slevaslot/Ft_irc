@@ -33,6 +33,7 @@
 #define MODE 10
 #define INVITE 11
 #define KILL 12
+#define USERHOST 13
 
 /*------- Colors ------*/
 

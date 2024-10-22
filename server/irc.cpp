@@ -24,6 +24,10 @@ void Server::parse_exec_cmd(std::string cmd, int fd)
 		if (_cmdSize > 2)
 			user(cmdSplited[1], _currentClient);
 		break;
+	case (USERHOST):
+		if (_cmdSize > 2)
+			user(cmdSplited[1], _currentClient);
+		break;
 	case (NICK):
 		if (_cmdSize > 1)
 			nickCmd(cmdSplited, _currentClient);

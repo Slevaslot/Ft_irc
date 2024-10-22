@@ -74,7 +74,7 @@ int findCmd(std::string cmdToFind)
 {
 	if (cmdToFind.size() <= 3)
 		return (-1);
-	std::string cmds[13] = {
+	std::string cmds[14] = {
 		"PASS",
 		"NICK",
 		"USER",
@@ -88,8 +88,9 @@ int findCmd(std::string cmdToFind)
 		"MODE",
 		"INVITE",
 		"kill",
+		"userhost",
 	};
-	for (int i = 0; i < 13; ++i)
+	for (int i = 0; i < 14; ++i)
 	{
 		if (!cmds[i].empty() && cmds[i] == cmdToFind)
 		{
