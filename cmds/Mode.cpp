@@ -76,9 +76,11 @@ void Server::modeK(Channel &channel, std::string mode, std::string key)
 void Server::modeL(Channel &channel, std::string mode, std::string nb)
 {
 	unsigned long max;
-	std::istringstream iss(nb);
-	if (!(iss >> max))
-		return;
+	if (!nb.empty())
+	{
+		std::istringstream iss(nb);
+		iss >> max;
+	}
 	if (mode == "+l")
 		channel.setMaxUsers(max);
 	else

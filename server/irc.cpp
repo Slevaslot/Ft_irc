@@ -92,6 +92,7 @@ void Server::SignalHandler(int signum)
 
 void Server::CloseFds()
 {
+	std::cout << "cosefd\n";
 	for (size_t i = 0; i < clients.size(); i++)
 	{
 		std::cout << RED << "Client <" << clients[i].GetFd() << "> Disconnected" << WHI << std::endl;
@@ -113,6 +114,7 @@ void Server::ReceiveNewData(int fd)
 	ssize_t bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0)
 	{
+		std::cout << "RECEIVEDDATA\n";
 		std::cout << RED << "Client :" << fd << " Disconnected" << WHI << std::endl;
 		ClearClients(fd);
 		close(fd);
