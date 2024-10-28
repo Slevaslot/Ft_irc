@@ -119,17 +119,19 @@ void Server::ClearClients(int fd)
 {
 	if (!channels.empty())
 	{
-		for (std::vector<Channel>::iterator it = channels.begin(); it <= channels.end(); it++)
+		for (std::vector<Channel>::iterator it = channels.begin(); it < channels.end(); it++)
 		{
-			// if (it->GetClients().size() <= 1)
-			// {
-			// 	int channelIndex = GetChannelIndex(it->GetName());
-			// 	channels.erase(channels.begin() + channelIndex);
-			// }
-			// else
-			// {
-			it->GetClients().erase(it->GetThisClient(GetClientByFd(fd)));	
-			// }
+			std::vector<Client>::iterator cli = it->GetThisClient(GetClientByFd(fd));
+			std::cout << cli->GetNickname() << std::endl;
+			if (it->GetClients().size() <= 1)
+			{
+				int channelIndex = GetChannelIndex(it->GetName());
+				channels.erase(channels.begin() + channelIndex);
+			}
+			else
+			{
+				it->GetClients().erase(it->GetThisClient(GetClientByFd(fd)));
+			}
 		}
 	}
 	for (size_t i = 0; i < fds.size(); i++)
